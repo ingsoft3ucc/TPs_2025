@@ -107,7 +107,7 @@ Asegúrense de cumplir con todos los requisitos y procedimientos establecidos pa
   * [Trabajo Práctico 1 - Git Básico](trabajos/01-git-basico.md)
   * [Trabajo Práctico 2 - Introducción a Docker](trabajos/02-introduccion-docker.md)
   * [Trabajo Práctico 3 - Introducción a Azure DevOps](trabajos/03-introduccion-azuredevops.md)
-  * [Trabajo Práctico 4 - Azure DevOps Build Pipelines]
+  * [Trabajo Práctico 4 - Azure DevOps Build Pipelines](trabajos/04-ado-pipelines.md)
   * [Trabajo Práctico 5 - Azure DevOps Release Pipelines]
   * [Trabajo Práctico 6 - Pruebas Unitarias]
   * [Trabajo Práctico 7 - Code Coverage, Análisis Estático de Código y Pruebas de Integración]
