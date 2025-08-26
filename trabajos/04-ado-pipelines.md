@@ -72,7 +72,7 @@ Este trabajo se aprueba **solo si podés explicar qué hiciste, por qué lo hici
 Como líder técnico, debés:
 1. Elegir una app (o crear una mínima) con **Front + Back** (stack libre: Angular/React/Vue + .NET/Node/Java, etc.).  
 2. Versionar todo en **un único repo** (mono‑repo recomendado) con carpetas `/front`, `/back`.  
-3. Definir un **pipeline en YAML** con **CI** (build+test) que **corra el pipeline en un agente Self‑Hosted** instalado en tu equipo.  
+3. Definir un **pipeline en YAML** con **CI** (build) que **corra el pipeline en un agente Self‑Hosted** instalado en tu equipo.  
 
 ---
 
@@ -131,7 +131,7 @@ Como líder técnico, debés:
 Preguntas típicas:
 - ¿Por qué YAML y no Classic para este caso?
 - ¿Qué ventajas concretas tiene usar un agente Self-Hosted frente a uno Microsoft-Hosted en tu escenario?
-- ¿Cómo estructuraste el pipeline para que el build del front y del back sean independientes pero parte de la misma integración continua?
+- ¿Cómo estructurías el pipeline para que el build del front y del back sean independientes pero parte de la misma integración continua?
 
 ---
 
