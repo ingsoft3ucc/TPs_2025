@@ -53,13 +53,15 @@ No alcanza con copiar esta guía. **Si no podés defenderlo, no se aprueba.**
 - **Microsoft‑hosted:** cero mantenimiento, menor personalización de SO y herramientas.  
 - **Self‑Hosted:** control total (SO, SDKs, Docker, DB, puertos), ideal para despliegues locales o entornos restringidos.
 
+## 3- Desarrollo de la Guía
+- Seguir la guia presente en [04-ADO_Pipelines.pptx](trabajos/04-ADO_Pipelines.pptx)
 ---
 
 # Trabajo Práctico 04 – Azure DevOps Pipelines (2025)
 
 ## 🎯 Objetivo
 
-Construir un **pipeline CI/CD en YAML** para una aplicación **a elección** que tenga **frontend y backend**, y **desplegarla en tu máquina** usando un **agente Self‑Hosted**.
+Construir un **pipeline CI en YAML** para una aplicación **a elección** que tenga **frontend y backend** usando un **agente Self‑Hosted**.
 
 Este trabajo se aprueba **solo si podés explicar qué hiciste, por qué lo hiciste y cómo lo resolviste**.
 
@@ -70,7 +72,7 @@ Este trabajo se aprueba **solo si podés explicar qué hiciste, por qué lo hici
 Como líder técnico, debés:
 1. Elegir una app (o crear una mínima) con **Front + Back** (stack libre: Angular/React/Vue + .NET/Node/Java, etc.).  
 2. Versionar todo en **un único repo** (mono‑repo recomendado) con carpetas `/front`, `/back`.  
-3. Definir un **pipeline multi‑stage en YAML** con **CI** (build+test) y **CD** (deploy) que **corra el despliegue en un agente Self‑Hosted** instalado en tu equipo.  
+3. Definir un **pipeline en YAML** con **CI** (build+test) que **corra el pipeline en un agente Self‑Hosted** instalado en tu equipo.  
 
 ---
 
@@ -86,12 +88,10 @@ Como líder técnico, debés:
     - Build front (por ejemplo `npm ci && npm run build`).  
     - Build back (por ejemplo `dotnet restore/build/test` o `mvn package`/`gradle build`).  
     - Publicación de artefactos (dist/bin).  
-  - **Stage CD** (deployment):  
-    - Job de **deployment** apuntando al **pool self‑hosted**.  
-    - Despliegue de back y front.  
+ 
     
 ### 3. Evidencias
-- Capturas: creación del pool/agente, ejecuciones de CI y CD, artefactos publicados, consola del despliegue y app corriendo.
+- Capturas: creación del pool/agente, ejecuciones de CI y artefactos publicados.
 
 ---
 
@@ -103,9 +103,7 @@ Como líder técnico, debés:
    - Estructura `/front`, `/back`,  `azure-pipelines.yml`.  
 3. **CI**
    - Build+test front y back, publicar artefactos.  
-4. **CD**
-   - Deployment job -> pool `SelfHosted`.   
-5. **Evidencias**
+4. **Evidencias**
    - Capturas y explicación en `decisiones.md`.
 
 ---
@@ -113,7 +111,7 @@ Como líder técnico, debés:
 ## 📄 Entregables
 
 1. **Acceso al proyecto en Azure DevOps** con:
-   - Pipeline **YAML** multi‑stage (CI + CD) apuntando al **Self‑Hosted agent**.  
+   - Pipeline **YAML** de CI apuntando al **Self‑Hosted agent**.  
    - Ejecuciones exitosas (logs visibles) y artefactos publicados.
 
 2. **Repositorio en GitHub** con:
@@ -131,10 +129,9 @@ Como líder técnico, debés:
 ## 🗣️ Defensa Oral Obligatoria
 
 Preguntas típicas:
-- ¿Por qué YAML y no Classic para este caso?  
-- ¿Cómo garantizás reproducibilidad entre CI y CD?  
-- ¿Cómo aislaste secretos? ¿Qué alternativas consideraste?  
-- ¿Cómo ejecutarías  migraciones de DB?
+- ¿Por qué YAML y no Classic para este caso?
+- ¿Qué ventajas concretas tiene usar un agente Self-Hosted frente a uno Microsoft-Hosted en tu escenario?
+- ¿Cómo estructuraste el pipeline para que el build del front y del back sean independientes pero parte de la misma integración continua?
 
 ---
 
@@ -142,10 +139,9 @@ Preguntas típicas:
 
 | Criterio                                                    | Peso |
 |-------------------------------------------------------------|------|
-| Pipeline YAML multi‑stage (CI + CD) funcionando             | 25%  |
-| Despliegue en Self‑Hosted                                   | 25%  |
-| Claridad y justificación en `decisiones.md`                 | 10%  |
-| Defensa oral: comprensión y argumentación                   | 40%  |
+| Pipeline YAML (CI) funcionando                              | 35%  |
+| Claridad y justificación en `decisiones.md`                 | 15%  |
+| Defensa oral: comprensión y argumentación                   | 50%  |
 
 ---
 
