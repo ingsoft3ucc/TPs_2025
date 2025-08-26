@@ -34,7 +34,7 @@ No alcanza con copiar esta guía. **Si no podés defenderlo, no se aprueba.**
 ## 1- Objetivos de Aprendizaje
 - Adquirir conocimientos acerca de las herramientas de integración y entrega continua en ADO.
 - Configurar pipelines **como código** con YAML.
-- Implementar procesos de **build, test, empaquetado, publicación y despliegue**.
+- Implementar procesos de **build, empaquetado, publicación y despliegue**.
 - Ejecutar despliegues en **agentes Self‑Hosted**.
 
 ## 2- Algunos conceptos fundamentales
@@ -59,7 +59,7 @@ No alcanza con copiar esta guía. **Si no podés defenderlo, no se aprueba.**
 
 ## 🎯 Objetivo
 
-Construir un **pipeline CI/CD en YAML** para una aplicación **a elección** que tenga **frontend, backend y base de datos**, y **desplegarla en tu máquina** usando un **agente Self‑Hosted**.
+Construir un **pipeline CI/CD en YAML** para una aplicación **a elección** que tenga **frontend y backend**, y **desplegarla en tu máquina** usando un **agente Self‑Hosted**.
 
 Este trabajo se aprueba **solo si podés explicar qué hiciste, por qué lo hiciste y cómo lo resolviste**.
 
@@ -68,15 +68,9 @@ Este trabajo se aprueba **solo si podés explicar qué hiciste, por qué lo hici
 ## 🧩 Escenario (actualizado)
 
 Como líder técnico, debés:
-1. Elegir una app (o crear una mínima) con **Front + Back + DB** (stack libre: Angular/React/Vue + .NET/Node/Java + SQL/Postgres/MySQL, etc.).  
-2. Versionar todo en **un único repo** (mono‑repo recomendado) con carpetas `/front`, `/back`, `/db`.  
+1. Elegir una app (o crear una mínima) con **Front + Back** (stack libre: Angular/React/Vue + .NET/Node/Java, etc.).  
+2. Versionar todo en **un único repo** (mono‑repo recomendado) con carpetas `/front`, `/back`.  
 3. Definir un **pipeline multi‑stage en YAML** con **CI** (build+test) y **CD** (deploy) que **corra el despliegue en un agente Self‑Hosted** instalado en tu equipo.  
-4. El despliegue puede orquestarse con **Docker Compose** o **scripts nativos** (systemd/npm/dotnet/java), pero debe incluir:  
-   - Construcción/obtención de artefactos.  
-   - **Migraciones/seed** de la base de datos (EF Core, Flyway, Liquibase o script SQL).  
-   - **Variables/secretos** gestionados correctamente (Variable Groups/Library, `.env`, Key Vault si aplica).  
-   - **Health checks** y verificación post‑deploy.  
-   - **Plan de rollback** básico.
 
 ---
 
@@ -84,32 +78,20 @@ Como líder técnico, debés:
 
 ### 1. Preparación del entorno
 - Crear **Pool** y **Agente Self‑Hosted** en ADO (instalado como servicio en tu máquina).  
-- Documentar requisitos (SDKs, Node, Docker, DB local, puertos) y **capabilities** del agente.
 
 ### 2. Estructura del repo y definición del pipeline
-- Organizar `/front`, `/back`, `/db` y agregar **`azure-pipelines.yml`** en raíz.  
+- Organizar `/front`, `/back`  y agregar **`azure-pipelines.yml`** en raíz.  
 - YAML requerido (multi‑stage):
   - **Stage CI** (trigger en `main`):  
     - Build front (por ejemplo `npm ci && npm run build`).  
     - Build back (por ejemplo `dotnet restore/build/test` o `mvn package`/`gradle build`).  
-    - Tests automáticos (front y back).  
-    - Publicación de artefactos (dist/bin, scripts de DB).  
+    - Publicación de artefactos (dist/bin).  
   - **Stage CD** (deployment):  
     - Job de **deployment** apuntando al **pool self‑hosted**.  
-    - Paso de migraciones/seed de DB.  
-    - Despliegue de back y front (Docker Compose o scripts).  
-    - Health check (curl o script) y salida clara de éxito/fallo.
-
-### 3. Gestión de secretos y configuración
-- No subir credenciales al repo.  
-- Usar **Variables**/Library y (opcional) `.env` solo en la máquina del agente.  
-- Documentar en `decisiones.md` cómo protegés credenciales y configuraciones.
-
-### 4. Estrategia de rollback
-- Describir y **automatizar mínimamente** un rollback (p.ej., `docker compose down && docker compose up` con imagen previa, o restaurar release anterior de artefactos).
-
-### 5. Evidencias
-- Capturas: creación del pool/agente, ejecuciones de CI y CD, artefactos publicados, consola del despliegue, health check OK y app corriendo.
+    - Despliegue de back y front.  
+    
+### 3. Evidencias
+- Capturas: creación del pool/agente, ejecuciones de CI y CD, artefactos publicados, consola del despliegue y app corriendo.
 
 ---
 
@@ -118,16 +100,12 @@ Como líder técnico, debés:
 1. **Self‑Hosted Agent**
    - Crear Pool `SelfHosted` y registrar `Agent-Local` (como servicio).  
 2. **Repo**
-   - Estructura `/front`, `/back`, `/db`, `azure-pipelines.yml`.  
+   - Estructura `/front`, `/back`,  `azure-pipelines.yml`.  
 3. **CI**
    - Build+test front y back, publicar artefactos.  
 4. **CD**
-   - Deployment job -> pool `SelfHosted`.  
-   - Migraciones DB + despliegue (Compose o scripts).  
-   - Health check.  
-5. **Rollback**
-   - Script/compose para volver a versión anterior.  
-6. **Evidencias**
+   - Deployment job -> pool `SelfHosted`.   
+5. **Evidencias**
    - Capturas y explicación en `decisiones.md`.
 
 ---
@@ -139,15 +117,12 @@ Como líder técnico, debés:
    - Ejecuciones exitosas (logs visibles) y artefactos publicados.
 
 2. **Repositorio en GitHub** con:
-   - **README.md**: cómo ejecutar local, cómo corre el pipeline, prerequisitos del agente, puertos, URLs y health checks.  
+   - **README.md**: cómo ejecutar local, cómo corre el pipeline, prerequisitos del agente, puertos, URLs .  
    - **decisiones.md** con:  
      - Stack elegido y estructura del repo.  
      - Diseño del pipeline (stages, jobs, artefactos).  
-     - Gestión de variables/secretos.  
-     - Estrategia de rollback.  
      - Evidencias (capturas).  
-   - (Opcional) `docker-compose.yml` y scripts de migración en `/db`.
-
+  
 3. **URL del proyecto** en la planilla:  
    - [Planilla de TPs](https://docs.google.com/spreadsheets/d/1mZKJ8FH390QHjwkABokh3Ys6kMOFZGzZJ3-kg5ziELc/edit?gid=0#gid=0)
 
@@ -159,8 +134,7 @@ Preguntas típicas:
 - ¿Por qué YAML y no Classic para este caso?  
 - ¿Cómo garantizás reproducibilidad entre CI y CD?  
 - ¿Cómo aislaste secretos? ¿Qué alternativas consideraste?  
-- ¿Qué valida tu health check y cómo decidís fallar un deploy?  
-- ¿Cómo ejecutás y revertís migraciones de DB?
+- ¿Cómo ejecutarías  migraciones de DB?
 
 ---
 
@@ -169,9 +143,9 @@ Preguntas típicas:
 | Criterio                                                    | Peso |
 |-------------------------------------------------------------|------|
 | Pipeline YAML multi‑stage (CI + CD) funcionando             | 25%  |
-| Despliegue en Self‑Hosted con migraciones y health check    | 25%  |
-| Claridad y justificación en `decisiones.md`                 | 25%  |
-| Defensa oral: comprensión y argumentación                   | 25%  |
+| Despliegue en Self‑Hosted                                   | 25%  |
+| Claridad y justificación en `decisiones.md`                 | 10%  |
+| Defensa oral: comprensión y argumentación                   | 40%  |
 
 ---
 
@@ -179,97 +153,3 @@ Preguntas típicas:
 
 Podés usar IA (ChatGPT, Copilot), pero **deberás declarar qué parte fue generada con IA** y justificar cómo la verificaste.  
 Si no podés defenderlo, **no se aprueba**.
-
----
-
-## 📎 Anexo: plantilla mínima de `azure-pipelines.yml` (orientativa)
-
-> Adaptá comandos a tu stack. Si usás Docker Compose para CD, instalalo en el agente y versioná `docker-compose.yml`.
-
-```yaml
-trigger:
-  branches:
-    include:
-      - main
-
-stages:
-  - stage: CI
-    displayName: Build & Test
-    jobs:
-      - job: build_test
-        displayName: Build Front/Back + Test
-        pool:
-          vmImage: 'ubuntu-latest'   # Podés usar MS-hosted en CI y Self-Hosted en CD, o todo Self-Hosted
-        steps:
-          - checkout: self
-
-          # Frontend
-          - task: NodeTool@0
-            inputs:
-              versionSpec: '20.x'
-          - script: |
-              cd front
-              npm ci
-              npm run build
-            displayName: Build Front
-
-          # Backend (ejemplos .NET o Node/Java: cambiá según tu stack)
-          - task: UseDotNet@2
-            inputs:
-              packageType: 'sdk'
-              version: '8.0.x'
-          - script: |
-              cd back
-              dotnet restore
-              dotnet build --configuration Release
-              dotnet test --configuration Release --no-build
-            displayName: Build & Test Back
-
-          # Publicar artefactos (dist y binarios + scripts DB)
-          - task: PublishBuildArtifacts@1
-            inputs:
-              PathtoPublish: '$(Build.SourcesDirectory)'
-              ArtifactName: 'drop'
-              publishLocation: 'Container'
-
-  - stage: CD
-    displayName: Deploy Local (Self-Hosted)
-    dependsOn: CI
-    jobs:
-      - deployment: deploy_local
-        displayName: Deploy en agente local
-        environment: 'Local.SelfHosted'
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-                - download: current
-                  artifact: drop
-
-                # Opcional: cargar variables/secretos desde archivos locales del agente (no versionados)
-                - script: |
-                    echo "Cargando variables locales (.env) si corresponde"
-                  displayName: Preparar variables
-
-                # Migraciones de base de datos (adaptar a EF/Flyway/Liquibase/SQL)
-                - script: |
-                    echo "Aplicando migraciones de DB..."
-                    # ejemplo EF Core:
-                    # cd back && dotnet tool restore && dotnet ef database update --project ./Back.csproj
-                  displayName: Migraciones DB
-
-                # Despliegue (Docker Compose o scripts)
-                - script: |
-                    echo "Desplegando servicios..."
-                    # docker compose down && docker compose up -d --build
-                    # o: pm2/systemd/npm start/dotnet run, etc.
-                  displayName: Desplegar app
-
-                # Health check
-                - script: |
-                    echo "Chequeando salud..."
-                    # curl -f http://localhost:8080/health || exit 1
-                  displayName: Health Check
-        pool:
-          name: 'SelfHosted'   # Tu pool local
-```
