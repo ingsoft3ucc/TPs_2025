@@ -1,16 +1,64 @@
-## Trabajo Práctico 5 - Despliegue de aplicaciones con Azure Devops Release Pipelines
+# ⚠️ IMPORTANTE – Guía de Práctica Sugerida
 
-### 1- Objetivos de Aprendizaje
- - Adquirir conocimientos acerca de las herramientas de despliegue y releases de aplicaciones.
- - Configurar este tipo de herramientas.
- - Comprender el concepto de recurso en Azure
- - Comprender los conceptos básicos de Release Pipelines en Azure DevOps.
- - Configurar un Release Pipeline para automatizar despliegues en diferentes entornos-
+Lo que vas a ver a continuación es una **guía paso a paso altamente sugerida** para que practiques el uso de Azure DevOps Release Pipelines.  
+**Te recomendamos hacerla completa**, ya que te ayudará a adquirir los conocimientos necesarios.
 
-### 2- Unidad temática que incluye este trabajo práctico
-Este trabajo práctico corresponde a la unidad Nº: 3 (Libro Continuous Delivery: Cap 10)
+---
 
-### 3- Consignas a desarrollar en el trabajo práctico:
+## PERO: Esta guía **NO es el trabajo práctico** que tenés que entregar
+
+El trabajo práctico será evaluado en base a:
+- Tu capacidad para **configurar y utilizar Azure Release Pipelines con criterio técnico**.
+- Tu capacidad para **explicar y justificar cada decisión que tomaste**.
+- Una **defensa oral obligatoria** donde vas a tener que demostrar lo que sabés.
+
+---
+
+## ¿Dónde está el trabajo práctico?
+
+El **TP real que debés entregar y defender** se encuentra al final de este archivo.  
+No alcanza con copiar esta guía. **Si no podés defenderlo, no se aprueba.**
+
+---
+
+## Sobre esta guía
+
+- Esta guía NO es exhaustiva.  
+- Azure DevOps Release Pipelines requiere **investigación y práctica fuera de clase**.  
+- En 2 horas no vas a aprenderlo completo. **Esto es solo el punto de partida.**
+
+---
+
+# Guía Paso a Paso – Azure DevOps Release Pipelines (Práctica sugerida)
+
+## 1- Objetivos de Aprendizaje
+- Adquirir conocimientos acerca de las herramientas de despliegue y releases de aplicaciones.
+- Configurar este tipo de herramientas.
+- Comprender el concepto de recurso en Azure
+- Comprender los conceptos básicos de Release Pipelines en Azure DevOps.
+- Configurar un Release Pipeline para automatizar despliegues en diferentes entornos.
+
+## 2- Algunos conceptos fundamentales
+
+### Releases vs Build Pipelines
+- **Build Pipelines:** enfocados en **CI** (integración continua), compilación, testing y generación de artefactos.  
+- **Release Pipelines:** enfocados en **CD** (entrega/despliegue continuo), distribución de artefactos a diferentes entornos.  
+- **Entornos múltiples:** QA, Staging, Production con diferentes configuraciones y aprobaciones.
+
+### ¿Qué son Azure DevOps Release Pipelines?
+- Servicio de **despliegue continuo** para automatizar releases en múltiples entornos.  
+- Gestión de **artefactos** generados por Build Pipelines.  
+- Control de **aprobaciones** y **gates** entre entornos.  
+- Soporte para **Azure Resources** y despliegues híbridos.
+
+### Entornos y Estrategias
+- **Desarrollo → QA → Staging → Producción:** progresión controlada de releases.  
+- **Blue/Green, Canary, Rolling:** estrategias avanzadas de despliegue.  
+- **Rollback:** capacidad de revertir a versiones anteriores rápidamente.
+
+---
+
+## 3- Consignas a desarrollar en el trabajo práctico:
  - Los despliegues (deployments) de aplicaciones se pueden realizar en diferentes tipos de entornos
    - On-Premise (internos) es decir en servidores propios.
    - Nubes Públicas, ejemplo AWS, Azure, Gcloud, etc.
@@ -815,15 +863,140 @@ Este trabajo práctico corresponde a la unidad Nº: 3 (Libro Continuous Delivery
 ### 7-  Criterio de Calificación
 Los pasos 4.1 al 4.13 representan un 60% de la nota total, los pasos 4.13 y subsiguientes representan el 40% restante.
 
-### 8-  Documentación y Recursos Adicionales
+---
+
+# Trabajo Práctico 05 – Azure DevOps Release Pipelines (2025)
+
+## 🎯 Objetivo
+
+Implementar un **Release Pipeline completo** que automatice el despliegue de una aplicación desde **QA hasta Producción** utilizando **Azure Web Apps**, con **aprobaciones manuales** y **estrategias de rollback**.
+
+Este trabajo se aprueba **solo si podés explicar qué hiciste, por qué lo hiciste y cómo lo resolviste**.
+
+---
+
+## 🧩 Escenario (actualizado)
+
+Como líder técnico, debés:
+1. Tomar la aplicación del **TP04** (o crear una nueva) con **Front + Back + DB**.  
+2. Configurar **Azure Web Apps** para entornos de **QA** y **Producción**.  
+3. Crear un **Release Pipeline** que tome artefactos del Build Pipeline y los despliegue automáticamente.  
+4. Implementar **aprobaciones manuales** para el pase a Producción.  
+5. El despliegue debe incluir:  
+   - Configuración de **variables por entorno** (connection strings, URLs, etc.).  
+   - **Health checks** post-despliegue.  
+   - **Estrategia de rollback** documentada y probada.  
+   - **Evidencias** de despliegues exitosos en ambos entornos.
+
+---
+
+## 📋 Tareas que debés cumplir
+
+### 1. Configuración de Azure Resources
+- Crear **Azure Web Apps** para QA y Producción.  
+- Configurar **connection strings** y variables de entorno.  
+- Documentar recursos creados y su propósito.
+
+### 2. Release Pipeline Configuration
+- Configurar **Release Pipeline** conectado al Build Pipeline del TP04.  
+- Definir **stages** para QA y Producción con diferentes configuraciones.  
+- Implementar **deployment slots** si corresponde (blue/green).
+
+### 3. Gestión de aprobaciones y gates
+- Configurar **aprobaciones manuales** para el pase a Producción.  
+- Implementar **pre/post-deployment gates** si aplica.  
+- Documentar proceso de aprobación y responsables.
+
+### 4. Estrategia de rollback
+- Implementar y documentar **plan de rollback**.  
+- Probar rollback en QA antes de aplicar en Producción.  
+- Automatizar proceso de rollback donde sea posible.
+
+### 5. Evidencias y documentación
+- Capturas de configuración de Web Apps, releases exitosos, health checks.  
+- Documentar en `decisiones.md` las decisiones técnicas tomadas.
+
+---
+
+## 🔧 Pasos sugeridos (checklist)
+
+1. **Azure Resources**
+   - Crear Resource Group y Web Apps (QA + PROD).  
+2. **Release Pipeline**
+   - Conectar con Build Pipeline, configurar stages QA/PROD.  
+3. **Variables y Secrets**
+   - Configurar Variable Groups por entorno.  
+4. **Aprobaciones**
+   - Implementar aprobación manual QA → PROD.  
+5. **Health Checks**
+   - Validar despliegues con endpoints de salud.  
+6. **Rollback**
+   - Documentar y probar estrategia de rollback.  
+7. **Evidencias**
+   - Capturas y explicación en `decisiones.md`.
+
+---
+
+## 📄 Entregables
+
+1. **Acceso al proyecto en Azure DevOps** con:
+   - **Release Pipeline** configurado con stages QA y Producción.  
+   - Ejecuciones exitosas con aprobaciones manuales funcionando.  
+   - Conexión correcta con Build Pipeline del TP04.
+
+2. **Recursos de Azure** configurados:
+   - **Web Apps** funcionando en QA y Producción.  
+   - Variables y connection strings configuradas correctamente.
+
+3. **Repositorio en GitHub** actualizado con:
+   - **README.md**: cómo acceder a las Web Apps, URLs de QA y PROD, proceso de despliegue.  
+   - **decisiones.md** con:  
+     - Arquitectura de release elegida.  
+     - Configuración de entornos y variables.  
+     - Estrategia de aprobaciones implementada.  
+     - Plan de rollback y pruebas realizadas.  
+     - Evidencias (capturas) de releases exitosos.
+
+4. **URL del proyecto** en la planilla:  
+   - [Planilla de TPs](https://docs.google.com/spreadsheets/d/1mZKJ8FH390QHjwkABokh3Ys6kMOFZGzZJ3-kg5ziELc/edit?gid=0#gid=0)
+
+---
+
+## 🗣️ Defensa Oral Obligatoria
+
+Preguntas típicas:
+- ¿Por qué Release Pipelines vs YAML Pipelines para este escenario?  
+- ¿Cómo gestionás variables sensibles entre entornos?  
+- ¿Qué criterios usás para aprobar un pase a Producción?  
+- ¿Cómo validás que un despliegue fue exitoso?  
+- ¿Cómo ejecutás un rollback y en qué situaciones?
+
+---
+
+## ✅ Evaluación
+
+| Criterio                                                    | Peso |
+|-------------------------------------------------------------|------|
+| Release Pipeline funcionando (QA + PROD)                   | 25%  |
+| Configuración correcta de Azure Web Apps y variables       | 25%  |
+| Aprobaciones manuales y gestión de entornos                | 25%  |
+| Defensa oral: comprensión y argumentación                  | 25%  |
+
+---
+
+## ⚠️ Uso de IA
+
+Podés usar IA (ChatGPT, Copilot), pero **deberás declarar qué parte fue generada con IA** y justificar cómo la verificaste.  
+Si no podés defenderlo, **no se aprueba**.
+
+---
+
+## 📎 Anexo: Documentación y Recursos Adicionales
+
 - https://learn.microsoft.com/en-us/azure/devops/?view=azure-devops
-
 - https://learn.microsoft.com/en-us/azure/devops/pipelines/?view=azure-devops
-
 - https://learn.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/?view=azure-pipelines
-
 - https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/overview
-
 - https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/overview
 
 
