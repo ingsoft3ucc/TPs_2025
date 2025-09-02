@@ -794,7 +794,7 @@ No alcanza con copiar esta guía. **Si no podés defenderlo, no se aprueba.**
 
 ## 🎯 Objetivo
 
-Implementar un **Release Pipeline completo** que automatice el despliegue de una aplicación desde **QA hasta Producción** utilizando **Azure Web Apps**, con **aprobaciones manuales** y **estrategias de rollback**.
+Implementar un **Release Pipeline completo** que automatice el despliegue de una aplicación desde **QA hasta Producción** utilizando **servicios cloud de tu elección** (Azure Web Apps, AWS EC2/ECS, Google Cloud Run, etc.), con **aprobaciones manuales** y **estrategias de rollback**.
 
 Este trabajo se aprueba **solo si podés explicar qué hiciste, por qué lo hiciste y cómo lo resolviste**.
 
@@ -804,8 +804,8 @@ Este trabajo se aprueba **solo si podés explicar qué hiciste, por qué lo hici
 
 Como líder técnico, debés:
 1. Tomar la aplicación del **TP04** (o crear una nueva) con **Front + Back + DB**.  
-2. Configurar **Azure Web Apps** para entornos de **QA** y **Producción**.  
-3. Crear un **Release Pipeline** que tome artefactos del Build Pipeline y los despliegue automáticamente.  
+2. Configurar **servicios cloud** para entornos de **QA** y **Producción** (Azure Web Apps, AWS EC2/ECS, Google Cloud Run, Heroku, etc.).  
+3. Crear un **Release Pipeline** (Azure DevOps, GitHub Actions, AWS CodePipeline, etc.) que tome artefactos del Build Pipeline y los despliegue automáticamente.  
 4. Implementar **aprobaciones manuales** para el pase a Producción.  
 5. El despliegue debe incluir:  
    - Configuración de **variables por entorno** (connection strings, URLs, etc.).  
@@ -817,15 +817,15 @@ Como líder técnico, debés:
 
 ## 📋 Tareas que debés cumplir
 
-### 1. Configuración de Azure Resources
-- Crear **Azure Web Apps** para QA y Producción.  
+### 1. Configuración de Cloud Resources
+- Crear **servicios cloud** para QA y Producción (Azure Web Apps, AWS EC2/ECS, Google Cloud Run, etc.).  
 - Configurar **connection strings** y variables de entorno.  
 - Documentar recursos creados y su propósito.
 
 ### 2. Release Pipeline Configuration
-- Configurar **Release Pipeline** conectado al Build Pipeline del TP04.  
+- Configurar **Release Pipeline** (Azure DevOps, GitHub Actions, AWS CodePipeline, etc.) conectado al Build Pipeline del TP04.  
 - Definir **stages** para QA y Producción con diferentes configuraciones.  
-- Implementar **deployment slots** si corresponde (blue/green).
+- Implementar **deployment strategies** si corresponde (blue/green, rolling, canary).
 
 ### 3. Gestión de aprobaciones y gates
 - Configurar **aprobaciones manuales** para el pase a Producción.  
@@ -838,19 +838,19 @@ Como líder técnico, debés:
 - Automatizar proceso de rollback donde sea posible.
 
 ### 5. Evidencias y documentación
-- Capturas de configuración de Web Apps, releases exitosos, health checks.  
+- Capturas de configuración de servicios cloud, releases exitosos, health checks.  
 - Documentar en `decisiones.md` las decisiones técnicas tomadas.
 
 ---
 
 ## 🔧 Pasos sugeridos (checklist)
 
-1. **Azure Resources**
-   - Crear Resource Group y Web Apps (QA + PROD).  
+1. **Cloud Resources**
+   - Crear recursos cloud para QA + PROD (Azure, AWS, GCP, etc.).  
 2. **Release Pipeline**
    - Conectar con Build Pipeline, configurar stages QA/PROD.  
 3. **Variables y Secrets**
-   - Configurar Variable Groups por entorno.  
+   - Configurar variables y secretos por entorno.  
 4. **Aprobaciones**
    - Implementar aprobación manual QA → PROD.  
 5. **Health Checks**
@@ -864,19 +864,19 @@ Como líder técnico, debés:
 
 ## 📄 Entregables
 
-1. **Acceso al proyecto en Azure DevOps** con:
+1. **Acceso al proyecto de CI/CD** con:
    - **Release Pipeline** configurado con stages QA y Producción.  
    - Ejecuciones exitosas con aprobaciones manuales funcionando.  
    - Conexión correcta con Build Pipeline del TP04.
 
-2. **Recursos de Azure** configurados:
-   - **Web Apps** funcionando en QA y Producción.  
+2. **Recursos Cloud** configurados:
+   - **Servicios cloud** funcionando en QA y Producción.  
    - Variables y connection strings configuradas correctamente.
 
 3. **Repositorio en GitHub** actualizado con:
-   - **README.md**: cómo acceder a las Web Apps, URLs de QA y PROD, proceso de despliegue.  
+   - **README.md**: cómo acceder a los servicios, URLs de QA y PROD, proceso de despliegue.  
    - **decisiones.md** con:  
-     - Arquitectura de release elegida.  
+     - Arquitectura de release elegida (herramientas y servicios cloud utilizados).  
      - Configuración de entornos y variables.  
      - Estrategia de aprobaciones implementada.  
      - Plan de rollback y pruebas realizadas.  
@@ -890,7 +890,7 @@ Como líder técnico, debés:
 ## 🗣️ Defensa Oral Obligatoria
 
 Preguntas típicas:
-- ¿Por qué Release Pipelines vs YAML Pipelines para este escenario?  
+- ¿Por qué elegiste esta herramienta de CI/CD para este escenario?  
 - ¿Cómo gestionás variables sensibles entre entornos?  
 - ¿Qué criterios usás para aprobar un pase a Producción?  
 - ¿Cómo validás que un despliegue fue exitoso?  
@@ -903,7 +903,7 @@ Preguntas típicas:
 | Criterio                                                    | Peso |
 |-------------------------------------------------------------|------|
 | Release Pipeline funcionando (QA + PROD)                   | 25%  |
-| Configuración correcta de Azure Web Apps y variables       | 25%  |
+| Configuración correcta de servicios cloud y variables      | 25%  |
 | Aprobaciones manuales y gestión de entornos                | 25%  |
 | Defensa oral: comprensión y argumentación                  | 25%  |
 
