@@ -903,9 +903,9 @@ Preguntas típicas:
 | Criterio                                                    | Peso |
 |-------------------------------------------------------------|------|
 | Release Pipeline funcionando (QA + PROD)                   | 25%  |
-| Configuración correcta de servicios cloud y variables      | 25%  |
-| Aprobaciones manuales y gestión de entornos                | 25%  |
-| Defensa oral: comprensión y argumentación                  | 25%  |
+| Configuración correcta de servicios cloud y variables      | 10%  |
+| Aprobaciones manuales y gestión de entornos                | 15%  |
+| Defensa oral: comprensión y argumentación                  | 50%  |
 
 ---
 
