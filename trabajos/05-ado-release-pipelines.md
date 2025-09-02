@@ -213,74 +213,6 @@ No alcanza con copiar esta guía. **Si no podés defenderlo, no se aprueba.**
 ![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-08-29/87dc3039-4f21-4cc4-bc78-edffbb5d82e7/ascreenshot.jpeg?tl_px=0,101&br_px=859,582&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=373,212)
 
 
-5.1.22\. Click this text field.
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-08-29/2547ec3f-0c04-4f44-9aec-0733a87eff6d/ascreenshot.jpeg?tl_px=0,356&br_px=859,837&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=359,212)
-
-
-5.1.23\. Click "Registrarse"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-08-29/03b09f0c-05be-43bf-9910-df3f84044488/ascreenshot.jpeg?tl_px=116,487&br_px=976,968&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=402,361)
-
-
-5.1.24\. Click "Siguiente"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-08-29/99adbd68-9ce5-4e97-8b40-a54f7ff5b20f/ascreenshot.jpeg?tl_px=467,431&br_px=1327,912&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=402,212)
-
-
-5.1.25\. Click "Regístrese para obtener Azure con los precios de pago por uso."
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-08-29/e0e34b63-d502-4239-82dd-b615dc9e05c5/ascreenshot.jpeg?tl_px=423,134&br_px=1283,615&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=402,212)
-
-
-5.1.26\. Click "Acepto el contrato de cliente."
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-08-29/718b7a57-fa94-47ad-962f-a0a96767c8d8/ascreenshot.jpeg?tl_px=0,61&br_px=859,542&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=231,212)
-
-
-5.1.27\. Click "Siguiente"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-08-29/6617b10e-3771-4408-bbe1-61e21124c60c/ascreenshot.jpeg?tl_px=0,286&br_px=859,767&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=294,212)
-
-
-5.1.28\. Click "Siguiente"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-08-29/5c569c66-3721-45fe-8843-273cf8c1359a/ascreenshot.jpeg?tl_px=0,290&br_px=859,771&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=274,212)
-
-
-5.1.29\. Click "Registrarse"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-08-29/7f1b810e-6dfd-4248-9ac6-6e5f10499494/ascreenshot.jpeg?tl_px=28,487&br_px=887,968&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=402,361)
-
-
-5.1.30\. Click "Siguiente"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-08-29/62c8a8b0-2a17-452f-80b0-f0267bb9bb53/ascreenshot.jpeg?tl_px=469,441&br_px=1329,922&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=402,212)
-
-
-5.1.31\. Click here.
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-08-29/84c7cb19-c812-44a4-9dec-d68c0be415e0/ascreenshot.jpeg?tl_px=454,256&br_px=1314,737&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=402,212)
-
-
-5.1.32\. Click here.
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-08-29/13d09b79-3b01-4c5b-85ee-3c9e5ab7fc63/ascreenshot.jpeg?tl_px=0,0&br_px=859,480&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=134,137)
-
-
-5.1.33\. Click "Verify"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-08-29/a0abf4e1-adf8-4b58-bf0a-60c917564c77/ascreenshot.jpeg?tl_px=466,373&br_px=1326,854&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=402,212)
-
-
-5.1.34\. Click "[azportal2024@gmail.com](mailto:azportal2024@gmail.com)"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-08-29/a52e29ff-3449-48e5-a598-5f0b4c6885cb/ascreenshot.jpeg?tl_px=338,125&br_px=1198,606&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=402,212)
-
-
-5.1.35\. Click this icon.
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-08-29/35588b40-0ab1-4a69-bf1e-6f8738eafd30/ascreenshot.jpeg?tl_px=681,0&br_px=1541,480&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=808,42)
 
 
 #### 5.2 Crear un recurso Web App en Azure Portal
@@ -856,14 +788,7 @@ No alcanza con copiar esta guía. **Si no podés defenderlo, no se aprueba.**
 ![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/601a17d6-c1e2-4044-a2c9-0e60bd8cbc36/ascreenshot.jpeg?tl_px=487,520&br_px=2034,1385&force_format=jpeg&q=100&width=1120.0&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=524,277)
 
 
-### 6-  Presentación del trabajo práctico.
-- Subir un doc al repo con las capturas de pantalla de los pasos realizados y tener en el excel de repos (https://docs.google.com/spreadsheets/d/1mZKJ8FH390QHjwkABokh3Ys6kMOFZGzZJ3-kg5ziELc/edit?gid=0#gid=0) la url del proyecto de AzureDevops.
-- Aclarar los nombres de los pipelines que se deben evaluar.
-
-### 7-  Criterio de Calificación
-Los pasos 4.1 al 4.13 representan un 60% de la nota total, los pasos 4.13 y subsiguientes representan el 40% restante.
-
----
+-
 
 # Trabajo Práctico 05 – Azure DevOps Release Pipelines (2025)
 
