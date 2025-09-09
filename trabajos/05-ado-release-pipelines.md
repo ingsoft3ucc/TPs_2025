@@ -27,6 +27,12 @@ No alcanza con copiar esta guía. **Si no podés defenderlo, no se aprueba.**
 - Azure DevOps Release Pipelines requiere **investigación y práctica fuera de clase**.  
 - En 2 horas no vas a aprenderlo completo. **Esto es solo el punto de partida.**
 
+## 📊 Presentación Resumida
+
+**[Ver presentación de conceptos clave →](https://gamma.app/docs/Azure-DevOps-Release-Pipelines-pbfw9eemok5pjze)**
+
+Esta presentación resume los conceptos principales que vas a ver en esta guía práctica.
+
 ---
 
 # Guía Paso a Paso – Azure DevOps Release Pipelines (Práctica sugerida)
