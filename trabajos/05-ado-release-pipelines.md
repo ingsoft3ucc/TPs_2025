@@ -240,7 +240,7 @@ stages:
 ### 4.2\. Configurar Service Connection en Azure DevOps
 
 **4.2.1\. Crear Service Connection**
-- Ir a `https://dev.azure.com/ingsoft3ucc2025/` > Project Settings > Service connections
+- Ir a `https://dev.azure.com/[TUORGANIZACION]/` > Project Settings > Service connections
 - Click "New service connection" > "Azure Resource Manager" > "Service principal (automatic)"
 - Subscription: Seleccionar tu suscripción Azure
 - Resource Group: `rg-tp05-ingsoft3-2025`
@@ -613,109 +613,7 @@ return Enumerable.Range(1, 5).Select(index => new WeatherForecast  // Cambiar a 
 
 
 ## 5- Instructivos:
-#### 5.1 Crear una cuenta en Azure
 
-5.1.1\. Navigate to [https://azure.microsoft.com/es-mx/](https://azure.microsoft.com/es-mx/)
-
-
-5.1.2\. Click "Comenzar a usar Azure"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-08-29/c6b10b19-339c-4d02-a524-eb552d66fda4/ascreenshot.jpeg?tl_px=681,0&br_px=1541,480&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=558,-3)
-
-
-5.1.3\. Click "Probar Azure gratis"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-08-29/ac523580-203f-4497-88c6-e2d05e20102b/ascreenshot.jpeg?tl_px=0,204&br_px=859,685&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=192,212)
-
-
-5.1.4\. Click "Usar otra cuenta"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-08-29/80d9b3a9-9928-4894-8044-01fdd370471e/ascreenshot.jpeg?tl_px=269,443&br_px=1129,924&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=402,212)
-
-
-5.1.5\. Click this button.
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-08-29/f32d5e77-531d-4364-80ef-0c8bbb379c05/ascreenshot.jpeg?tl_px=456,312&br_px=1316,793&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=402,212)
-
-
-5.1.6\. Click "Cree una"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-08-29/5e60ec4c-8f1e-4a79-bbd4-ce5c48057e28/ascreenshot.jpeg?tl_px=337,245&br_px=1197,726&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=402,212)
-
-
-5.1.7\. Click "get a new one"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-08-29/afa2e4f5-8d1e-44e1-8660-12de7d97a93e/ascreenshot.jpeg?tl_px=365,162&br_px=1225,643&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=402,212)
-
-
-5.1.8\. Click "Next"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-08-29/ac07a53d-3685-48a7-ad85-c52a04dabb7e/ascreenshot.jpeg?tl_px=458,336&br_px=1318,817&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=402,212)
-
-
-5.1.9\. Click "Next"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-08-29/1c7816d2-921b-492d-9ed2-cc1b2efc7917/ascreenshot.jpeg?tl_px=462,368&br_px=1322,849&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=402,212)
-
-
-5.1.10\. Click "Next"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-08-29/c8abc064-5ed4-4956-b86a-1e4b8a0c7637/ascreenshot.jpeg?tl_px=497,372&br_px=1357,853&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=402,212)
-
-
-5.1.11\. Click "Next"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-08-29/28558c68-72c2-4689-9d48-337ddf893843/ascreenshot.jpeg?tl_px=500,444&br_px=1360,925&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=402,212)
-
-
-5.1.12\. Click "To verify your email address use this security code: 399365"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-08-29/fbe2a0bd-0b90-474a-a3d3-dde4ffb0a52f/ascreenshot.jpeg?tl_px=243,172&br_px=1103,653&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=402,212)
-
-
-5.1.13\. Click "Next"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-08-29/56490255-84b9-4921-9819-6ab6d10edae8/ascreenshot.jpeg?tl_px=482,417&br_px=1342,898&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=402,212)
-
-
-5.1.14\. Click "Sign in"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-08-29/d06b46be-fb5c-454a-aac5-2091b8f84df4/ascreenshot.jpeg?tl_px=462,360&br_px=1322,841&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=402,212)
-
-
-5.1.15\. Click "Yes"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-08-29/b69e6757-6a9f-448f-9509-325ebef29b71/ascreenshot.jpeg?tl_px=455,341&br_px=1315,822&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=402,212)
-
-
-5.1.16\. Click "Acepto el contrato de cliente."
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-08-29/72a45337-d58b-4413-b235-688b9b02634b/ascreenshot.jpeg?tl_px=0,286&br_px=859,767&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=227,212)
-
-
-5.1.17\. Click the "Teléfono" field.
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-08-29/54267126-b1d8-4591-8172-fd3bf32ae789/ascreenshot.jpeg?tl_px=14,96&br_px=873,577&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=402,212)
-
-
-5.1.18\. Click "Envíeme un mensaje de texto"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-08-29/75b93bcb-b64f-4353-9c2b-49a6c5113bd4/ascreenshot.jpeg?tl_px=0,270&br_px=859,751&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=390,212)
-
-
-5.1.19\. Click "Comprobar código"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-08-29/29b45c8e-5b26-4a7b-8367-af897209302a/ascreenshot.jpeg?tl_px=0,401&br_px=859,882&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=299,212)
-
-
-5.1.20\. Click "Siguiente"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-08-29/a2e5ee85-1a17-40c8-a1f9-fc8507276d5a/ascreenshot.jpeg?tl_px=0,487&br_px=859,968&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=290,217)
-
-
-5.1.21\. Click this button field.
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-08-29/87dc3039-4f21-4cc4-bc78-edffbb5d82e7/ascreenshot.jpeg?tl_px=0,101&br_px=859,582&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=373,212)
 
 
 
@@ -1029,8 +927,7 @@ Como líder técnico, debés:
 5. El despliegue debe incluir:  
    - Configuración de **variables por entorno** (connection strings, URLs, etc.).  
    - **Health checks** post-despliegue.  
-   - **Estrategia de rollback** documentada y probada.  
-   - **Evidencias** de despliegues exitosos en ambos entornos.
+
 
 ---
 
@@ -1038,7 +935,7 @@ Como líder técnico, debés:
 
 ### 1. Configuración de Cloud Resources
 - Crear **servicios cloud** para QA y Producción (Azure Web Apps, AWS EC2/ECS, Google Cloud Run, etc.).  
-- Configurar **connection strings** y variables de entorno.  
+- Configurar variables de entorno.  
 - Documentar recursos creados y su propósito.
 
 ### 2. Release Pipeline Configuration
@@ -1047,8 +944,7 @@ Como líder técnico, debés:
 
 
 ### 3. Gestión de aprobaciones y gates
-- Configurar **aprobaciones manuales** para el pase a Producción.  
-- Implementar **pre/post-deployment gates** si aplica.  
+- Configurar **aprobaciones manuales** para el pase a Producción.    
 - Documentar proceso de aprobación y responsables.
 
 
@@ -1069,9 +965,7 @@ Como líder técnico, debés:
 4. **Aprobaciones**
    - Implementar aprobación manual QA → PROD.  
 5. **Health Checks**
-   - Validar despliegues con endpoints de salud.  
-6. **Rollback**
-   - Documentar y probar estrategia de rollback.  
+   - Validar despliegues con endpoints de salud.   
 7. **Evidencias**
    - Capturas y explicación en `decisiones.md`.
 
@@ -1080,13 +974,13 @@ Como líder técnico, debés:
 ## 📄 Entregables
 
 1. **Acceso al proyecto de CI/CD** con:
-   - **Release Pipeline** configurado con stages QA y Producción.  
+   - **Pipeline** configurado con stages Build, QA y Producción.  
    - Ejecuciones exitosas con aprobaciones manuales funcionando.  
-   - Conexión correcta con Build Pipeline del TP04.
+
 
 2. **Recursos Cloud** configurados:
    - **Servicios cloud** funcionando en QA y Producción.  
-   - Variables y connection strings configuradas correctamente.
+   - Variables  configuradas correctamente.
 
 3. **Repositorio en GitHub** actualizado con:
    - **README.md**: cómo acceder a los servicios, URLs de QA y PROD, proceso de despliegue.  
@@ -1094,7 +988,6 @@ Como líder técnico, debés:
      - Arquitectura de release elegida (herramientas y servicios cloud utilizados).  
      - Configuración de entornos y variables.  
      - Estrategia de aprobaciones implementada.  
-     - Plan de rollback y pruebas realizadas.  
      - Evidencias (capturas) de releases exitosos.
 
 4. **URL del proyecto** en la planilla:  
