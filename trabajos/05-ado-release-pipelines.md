@@ -40,74 +40,579 @@ No alcanza con copiar esta guía. **Si no podés defenderlo, no se aprueba.**
 
 ## 2- Algunos conceptos fundamentales
 
-### Releases vs Build Pipelines
-- **Build Pipelines:** enfocados en **CI** (integración continua), compilación, testing y generación de artefactos.  
-- **Release Pipelines:** enfocados en **CD** (entrega/despliegue continuo), distribución de artefactos a diferentes entornos.  
+### CI vs CD en Pipelines YAML
+- **Build (CI):** enfocado en **integración continua**, compilación, testing y generación de artefactos.  
+- **Deploy (CD):** enfocado en **entrega/despliegue continuo**, distribución de artefactos a diferentes entornos.  
 - **Entornos múltiples:** QA, Staging, Production con diferentes configuraciones y aprobaciones.
+- **Pipeline único:** Un solo pipeline YAML maneja tanto CI como CD con múltiples stages.
 
-### ¿Qué son Azure DevOps Release Pipelines?
-- Servicio de **despliegue continuo** para automatizar releases en múltiples entornos.  
-- Gestión de **artefactos** generados por Build Pipelines.  
-- Control de **aprobaciones** y **gates** entre entornos.  
-- Soporte para **Azure Resources** y despliegues híbridos.
+### ¿Por qué YAML Pipelines en lugar de Release Pipelines clásicos?
+- Los **Release Pipelines clásicos están discontinuados** y Microsoft recomienda migrar a YAML.
+- **Pipeline as Code**: configuración versionada en el repositorio junto al código.
+- **Mayor flexibilidad**: lógica condicional, loops, variables complejas y templates reutilizables.
+- **Environments**: control de **aprobaciones** y **gates** entre entornos directamente en YAML.
+- **Deployment jobs**: estrategias avanzadas (blue/green, canary, rolling) nativamente soportadas.
 
 ### Entornos y Estrategias
-- **Desarrollo → QA → Staging → Producción:** progresión controlada de releases.  
-- **Blue/Green, Canary, Rolling:** estrategias avanzadas de despliegue.  
-- **Rollback:** capacidad de revertir a versiones anteriores rápidamente.
+
+#### Progresión de Entornos
+- **Desarrollo (DEV)**: Entorno para desarrollo activo, cambios constantes, base de datos local/compartida básica.
+- **QA (Quality Assurance)**: Entorno estable para testing automatizado y manual, datos de prueba consistentes.
+- **Staging (STG)**: Réplica exacta de producción, testing final pre-release, datos similares a producción.
+- **Producción (PROD)**: Entorno live con usuarios reales, máxima estabilidad, datos reales críticos.
+
+
+### Estructura de Pipelines YAML
+
+#### ¿Qué es un Pipeline?
+Un **pipeline** es un conjunto automatizado de procesos que se ejecutan para llevar el código desde el desarrollo hasta producción.
+
+#### Componentes básicos:
+
+**Stage (Etapa):**
+- Agrupa trabajos relacionados (ej: Build, Test, Deploy)
+- Se ejecutan secuencialmente por defecto
+- Representan fases principales del proceso
+
+**Job (Trabajo):**
+- Conjunto de pasos que se ejecutan en una máquina virtual
+- Varios jobs en un stage se ejecutan en paralelo
+- Ejemplo: compilar código, ejecutar tests
+
+**Task/Step (Tarea/Paso):**
+- Acción individual dentro de un job
+- Ejemplo: ejecutar un comando, descargar archivos
+- Unidad mínima de trabajo
+
+#### Ejemplo simple de estructura:
+
+```yaml
+# Pipeline básico con 2 stages
+stages:
+- stage: Build
+  jobs:
+  - job: CompileCode
+    steps:
+    - script: 'echo Compilando...'
+    - script: 'dotnet build'
+
+- stage: Deploy  
+  jobs:
+  - job: DeployApp
+    steps:
+    - script: 'echo Desplegando...'
+    - script: 'deploy.sh'
+```
+
+#### Jobs en paralelo vs secuencial:
+
+**Paralelo** (por defecto en un stage):
+```yaml
+- stage: Tests
+  jobs:
+  - job: UnitTests
+    steps:
+    - script: 'run unit tests'
+  
+  - job: IntegrationTests  # Se ejecuta AL MISMO TIEMPO
+    steps:
+    - script: 'run integration tests'
+```
+
+**Secuencial** (con dependencias):
+```yaml
+- stage: Deploy
+  jobs:
+  - job: DeployDatabase
+    steps:
+    - script: 'deploy database'
+  
+  - job: DeployApp
+    dependsOn: DeployDatabase  # Espera a que termine DeployDatabase
+    steps:
+    - script: 'deploy application'
+```
+
+#### Dependencias y Control de Errores:
+
+**Dependencias entre Stages:**
+```yaml
+stages:
+- stage: Build
+  jobs:
+  - job: CompileApp
+    steps:
+    - script: 'dotnet build'
+
+- stage: Test
+  dependsOn: Build  # Solo se ejecuta si Build es exitoso
+  jobs:
+  - job: RunTests
+    steps:
+    - script: 'dotnet test'
+
+- stage: Deploy
+  dependsOn: Test   # Solo se ejecuta si Test es exitoso
+  jobs:
+  - job: DeployApp
+    steps:
+    - script: 'deploy.sh'
+```
+
+**Continuar aunque falle** (condition):
+```yaml
+- stage: Deploy
+  dependsOn: Test
+  condition: always()  # Se ejecuta SIEMPRE, incluso si Test falla
+  jobs:
+  - job: Cleanup
+    steps:
+    - script: 'cleanup resources'
+
+- stage: Notify
+  dependsOn: Deploy  
+  condition: failed()  # Solo se ejecuta si Deploy falló
+  jobs:
+  - job: SendAlert
+    steps:
+    - script: 'send error notification'
+```
+
+**Múltiples dependencias:**
+```yaml
+stages:
+- stage: BuildFrontend
+  jobs:
+  - job: BuildUI
+    steps: 
+    - script: 'npm run build'
+
+- stage: BuildBackend  
+  jobs:
+  - job: BuildAPI
+    steps:
+    - script: 'dotnet build'
+
+- stage: Deploy
+  dependsOn:  # Espera a que terminen AMBOS
+  - BuildFrontend
+  - BuildBackend
+  jobs:
+  - job: DeployAll
+    steps:
+    - script: 'deploy frontend and backend'
+```
+
+#### Conditions más comunes:
+- **`succeeded()`**: Solo si el stage anterior fue exitoso (por defecto)
+- **`failed()`**: Solo si el stage anterior falló  
+- **`always()`**: Siempre se ejecuta, independientemente del resultado
+- **`canceled()`**: Solo si el pipeline fue cancelado
 
 ---
 
-## 3- Consignas a desarrollar en el trabajo práctico:
+## 3- Consignas a desarrollar:
  - Los despliegues (deployments) de aplicaciones se pueden realizar en diferentes tipos de entornos
    - On-Premise (internos) es decir en servidores propios.
    - Nubes Públicas, ejemplo AWS, Azure, Gcloud, etc.
    - Plataformas como servicios (PaaS), ejemplo Heroku, Google App Engine, AWS, Azure WebApp, etc
- - En este práctico haremos despliegue a Plataforma como Servicio utilizando Azure Web Apps
+ - En esta guía haremos despliegue a Plataforma como Servicio utilizando Azure Web Apps
 
-### 4- Desarrollo:
-4.1\. Crear una cuenta en Azure
+## 4- Desarrollo:
 
-4.2\. Crear un recurso Web App en Azure Portal y navegar a la url provista
+### 4.1\. Crear cuenta en Azure y configurar recursos
 
-4.3\. Actualizar Pipeline de Build para que use tareas de DotNetCoreCLI@2 como en el pipeline clásico, luego crear un Pipeline de Release en Azure DevOps con CD habilitada
+**4.1.1\. Crear cuenta Azure**
+- Seguir las instrucciones de la sección 5.1 para crear cuenta gratuita
 
-4.4\. Optimizar Pipeline de Build
+**4.1.2\. Crear Web App de QA en Azure Portal**
+- Crear Resource Group: `rg-tp05-ingsoft3-2025`
+- Crear App Service Plan: `plan-tp05-free`
+- Crear Web App QA: `webapp-tp05-qa-[apellido]` (reemplazar [apellido] con tu apellido)
+- Runtime: `.NET 8 (LTS)`
+- OS: Windows
+- Publish: Code
 
-4.5\. Verificar el deploy en la url de la WebApp /weatherforecast
+**4.1.3\. Crear Web App de PROD**
+- Crear Web App PROD: `webapp-tp05-prod-[apellido]`
+- Usar el mismo Resource Group y App Service Plan
 
-4.6\. Realizar un cambio al código del controlador para que devuelva 7 pronósticos, realizar commit, evaluar ejecución de pipelines de build y release, navegar a la url de la webapp/weatherforecast y corroborar cambio
+### 4.2\. Configurar Service Connection en Azure DevOps
 
-4.7\. Clonar la Web App de QA para que contar con una WebApp de PROD a partir de un Template Deployment en Azure Portal y navegar a la url provista para la WebApp de PROD.
+**4.2.1\. Crear Service Connection**
+- Ir a `https://dev.azure.com/ingsoft3ucc2025/` > Project Settings > Service connections
+- Click "New service connection" > "Azure Resource Manager" > "Service principal (automatic)"
+- Subscription: Seleccionar tu suscripción Azure
+- Resource Group: `rg-tp05-ingsoft3-2025`
+- Service connection name: `azure-tp05-connection`
+- Grant access permission to all pipelines: ✅
 
-4.8\. Agregar una etapa de Deploy a Prod en Azure Release Pipelines 
+### 4.3\. Crear Pipeline YAML básico (solo CI)
 
-4.9\.  Realizar un cambio al código del controlador para que devuelva 10 pronósticos, realizar commit, evaluar ejecución de pipelines de build y release, navegar a la url de la webapp/weatherforecast y corroborar cambio, verificar que en la url de la webapp_prod/weatherforecast se muestra lo mismo.
+**4.3.1\. Crear archivo `azure-pipelines.yml` en la raíz del repositorio:**
 
-4.10\. Modificar pipeline de release para colocar una aprobación manual para el paso a Producción.
+```yaml
+# Pipeline CI - Etapa inicial
+trigger:
+- main
 
-4.11\. Realizar un cambio al código del controlador para que devuelva 5 pronósticos, realizar commit, evaluar ejecución de pipelines de build y release, navegar a la url de la webapp/weatherforecast y corroborar cambio, verificar que en la url de la webapp_prod/weatherforecast aun se muestra la versión anterior.
+pool:
+  vmImage: 'windows-latest'
 
-4.12\. Aprobar el pase ya sea desde el release o desde el mail recibido. 
-<img width="1197" alt="image" src="https://github.com/user-attachments/assets/05e8d1a1-ae06-4824-91d7-1a6e0162e859">
+variables:
+  buildConfiguration: 'Release'
+  dotNetFramework: 'net8.0'
+  dotNetVersion: '8.0.x'
 
-<img width="1221" alt="image" src="https://github.com/user-attachments/assets/33710115-a5c3-43ee-a208-5879331c7a8d">
+stages:
+- stage: Build
+  displayName: 'Build and Test'
+  jobs:
+  - job: BuildJob
+    displayName: 'Build and Test Job'
+    steps:
+    
+    - task: UseDotNet@2
+      displayName: 'Use .NET 8 SDK'
+      inputs:
+        packageType: 'sdk'
+        version: '$(dotNetVersion)'
+    
+    - task: DotNetCoreCLI@2
+      displayName: 'Restore NuGet packages'
+      inputs:
+        command: 'restore'
+        projects: '**/*.csproj'
+    
+    - task: DotNetCoreCLI@2
+      displayName: 'Build application'
+      inputs:
+        command: 'build'
+        projects: '**/*.csproj'
+        arguments: '--configuration $(buildConfiguration) --no-restore'
+    
+    - task: DotNetCoreCLI@2
+      displayName: 'Publish application'
+      inputs:
+        command: 'publish'
+        projects: '**/*.csproj'
+        arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory) --no-build'
+        publishWebProjects: true
+        zipAfterPublish: true
+    
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish build artifacts'
+      inputs:
+        pathToPublish: '$(Build.ArtifactStagingDirectory)'
+        artifactName: 'drop'
+        publishLocation: 'Container'
+```
 
-<img width="1466" alt="image" src="https://github.com/user-attachments/assets/9655c548-d3da-4d29-8080-8324d711c18f">
+**4.3.2\. Crear el pipeline en Azure DevOps**
+- Ir a Pipelines > Create Pipeline
+- Seleccionar Azure Repos Git
+- Seleccionar tu repositorio
+- Seleccionar "Existing Azure Pipelines YAML file"
+- Seleccionar `/azure-pipelines.yml`
+- Click "Run"
 
-4.12.1\. Notar que se puede dar la aprobación pero posponer su aplicación hasta una determinada fecha
+### 4.4\. Verificar el build inicial
+
+**4.4.1\. Verificar ejecución del pipeline**
+- Verificar que todas las etapas se ejecuten correctamente
+- Verificar que se generen los artifacts
+- Revisar los logs en caso de errores
+
+### 4.5\. Extender pipeline para incluir deploy a QA
+
+**4.5.1\. Crear Environments en Azure DevOps**
+- Ir a Pipelines > Environments
+- Crear environment "QA" sin aprobaciones
+- Crear environment "PROD" con aprobación manual
+
+**4.5.2\. Actualizar `azure-pipelines.yml` para incluir CD:**
+
+```yaml
+# Pipeline CI/CD Completo
+trigger:
+- main
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  buildConfiguration: 'Release'
+  dotNetFramework: 'net8.0'
+  dotNetVersion: '8.0.x'
+  azureSubscription: 'azure-tp05-connection'  # Service Connection name
+
+stages:
+- stage: Build
+  displayName: 'Build and Test'
+  jobs:
+  - job: BuildJob
+    displayName: 'Build and Test Job'
+    steps:
+    
+    - task: UseDotNet@2
+      displayName: 'Use .NET 8 SDK'
+      inputs:
+        packageType: 'sdk'
+        version: '$(dotNetVersion)'
+    
+    - task: DotNetCoreCLI@2
+      displayName: 'Restore NuGet packages'
+      inputs:
+        command: 'restore'
+        projects: '**/*.csproj'
+    
+    - task: DotNetCoreCLI@2
+      displayName: 'Build application'
+      inputs:
+        command: 'build'
+        projects: '**/*.csproj'
+        arguments: '--configuration $(buildConfiguration) --no-restore'
+        
+    - task: DotNetCoreCLI@2
+      displayName: 'Publish application'
+      inputs:
+        command: 'publish'
+        projects: '**/*.csproj'
+        arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory) --no-build'
+        publishWebProjects: true
+        zipAfterPublish: true
+    
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish build artifacts'
+      inputs:
+        pathToPublish: '$(Build.ArtifactStagingDirectory)'
+        artifactName: 'drop'
+        publishLocation: 'Container'
+
+- stage: DeployQA
+  displayName: 'Deploy to QA'
+  dependsOn: Build
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+  jobs:
+  - deployment: DeployQAJob
+    displayName: 'Deploy to QA Environment'
+    environment: 'QA'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: AzureWebApp@1
+            displayName: 'Deploy to QA Web App'
+            inputs:
+              azureSubscription: '$(azureSubscription)'
+              appType: 'webApp'
+              appName: 'webapp-tp05-qa-[apellido]'  # Reemplazar con tu apellido
+              package: '$(Pipeline.Workspace)/drop/**/*.zip'
+              deploymentMethod: 'auto'
+```
+
+### 4.6\. Probar el deployment a QA
+
+**4.6.1\. Hacer un cambio en el código**
+- Modificar `WeatherForecastController.cs` para devolver 7 pronósticos:
+
+```csharp
+[HttpGet(Name = "GetWeatherForecast")]
+public IEnumerable<WeatherForecast> Get()
+{
+    return Enumerable.Range(1, 7).Select(index => new WeatherForecast  // Cambiar de 5 a 7
+    {
+        Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
+        TemperatureC = Random.Shared.Next(-20, 55),
+        Summary = Summaries[Random.Shared.Next(Summaries.Length)]
+    })
+    .ToArray();
+}
+```
+
+**4.6.2\. Hacer commit y push**
+```bash
+git add .
+git commit -m "Change forecast count to 7 items"
+git push origin main
+```
+
+**4.6.3\. Verificar deployment**
+- Ver ejecución del pipeline en Azure DevOps
+- Navegar a `https://webapp-tp05-qa-[apellido].azurewebsites.net/weatherforecast`
+- Verificar que devuelve 7 elementos
+
+### 4.7\. Agregar stage de deployment a PROD
+
+**4.7.1\. Actualizar `azure-pipelines.yml` para incluir PROD:**
+
+```yaml
+# Pipeline CI/CD Completo con QA y PROD
+trigger:
+- main
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  buildConfiguration: 'Release'
+  dotNetFramework: 'net8.0'
+  dotNetVersion: '8.0.x'
+  azureSubscription: 'azure-tp05-connection'
+
+stages:
+- stage: Build
+  displayName: 'Build and Test'
+  jobs:
+  - job: BuildJob
+    displayName: 'Build and Test Job'
+    steps:
+    
+    - task: UseDotNet@2
+      displayName: 'Use .NET 8 SDK'
+      inputs:
+        packageType: 'sdk'
+        version: '$(dotNetVersion)'
+    
+    - task: DotNetCoreCLI@2
+      displayName: 'Restore NuGet packages'
+      inputs:
+        command: 'restore'
+        projects: '**/*.csproj'
+    
+    - task: DotNetCoreCLI@2
+      displayName: 'Build application'
+      inputs:
+        command: 'build'
+        projects: '**/*.csproj'
+        arguments: '--configuration $(buildConfiguration) --no-restore'
+        
+    - task: DotNetCoreCLI@2
+      displayName: 'Publish application'
+      inputs:
+        command: 'publish'
+        projects: '**/*.csproj'
+        arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory) --no-build'
+        publishWebProjects: true
+        zipAfterPublish: true
+    
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish build artifacts'
+      inputs:
+        pathToPublish: '$(Build.ArtifactStagingDirectory)'
+        artifactName: 'drop'
+        publishLocation: 'Container'
+
+- stage: DeployQA
+  displayName: 'Deploy to QA'
+  dependsOn: Build
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+  jobs:
+  - deployment: DeployQAJob
+    displayName: 'Deploy to QA Environment'
+    environment: 'QA'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: AzureWebApp@1
+            displayName: 'Deploy to QA Web App'
+            inputs:
+              azureSubscription: '$(azureSubscription)'
+              appType: 'webApp'
+              appName: 'webapp-tp05-qa-[apellido]'
+              package: '$(Pipeline.Workspace)/drop/**/*.zip'
+              deploymentMethod: 'auto'
+
+- stage: DeployPROD
+  displayName: 'Deploy to PROD'
+  dependsOn: DeployQA
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+  jobs:
+  - deployment: DeployPRODJob
+    displayName: 'Deploy to PROD Environment'
+    environment: 'PROD'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: AzureWebApp@1
+            displayName: 'Deploy to PROD Web App'
+            inputs:
+              azureSubscription: '$(azureSubscription)'
+              appType: 'webApp'
+              appName: 'webapp-tp05-prod-[apellido]'
+              package: '$(Pipeline.Workspace)/drop/**/*.zip'
+              deploymentMethod: 'auto'
+```
+
+### 4.8\. Configurar aprobación manual para PROD
+
+**4.8.1\. Configurar Environment PROD con aprobación**
+- Ir a Pipelines > Environments > PROD
+- Click en los tres puntos (...) > Approvals and checks
+- Click "+" > Approvals
+- Añadir usuarios que pueden aprobar (tu usuario)
+- Timeout: 30 días
+- Minimum approvers: 1
+- Save
+
+### 4.9\. Probar el flujo completo con aprobación
+
+**4.9.1\. Cambiar código a 10 pronósticos**
+```csharp
+return Enumerable.Range(1, 10).Select(index => new WeatherForecast  // Cambiar a 10
+```
+
+**4.9.2\. Commit y push**
+```bash
+git add .
+git commit -m "Change forecast count to 10 items"
+git push origin main
+```
+
+**4.9.3\. Verificar flujo**
+- Pipeline ejecuta Build ✅
+- Deploy a QA se ejecuta automáticamente ✅
+- Deploy a PROD queda pendiente de aprobación ⏳
+- Verificar QA: `https://webapp-tp05-qa-[apellido].azurewebsites.net/weatherforecast`
+- Verificar PROD: `https://webapp-tp05-prod-[apellido].azurewebsites.net/weatherforecast` (debería tener versión anterior)
+
+### 4.10\. Aprobar deployment a PROD
+
+**4.10.1\. Aprobar desde la interfaz**
+- Ir a Pipelines > Environment > PROD > Pending deployments
+- Click "Review" > "Approve"
+- O aprobar desde el email recibido
+
+**4.10.2\. Opciones de aprobación**
+- Se puede aprobar inmediatamente
+- Se puede posponer la aprobación hasta una fecha específica
+- Se puede rechazar con comentarios
+
+### 4.11\. Verificar deployment final
+
+**4.11.1\. Confirmar deployment exitoso**
+- Esperar que termine el stage "Deploy to PROD"
+- Verificar PROD: `https://webapp-tp05-prod-[apellido].azurewebsites.net/weatherforecast`
+- Confirmar que ahora devuelve 10 elementos
+- Verificar que QA y PROD tienen la misma versión
+
+### 4.12\. Probar un segundo ciclo con aprobación pospuesta
+
+**4.12.1\. Cambiar a 5 pronósticos**
+```csharp
+return Enumerable.Range(1, 5).Select(index => new WeatherForecast  // Cambiar a 5
+```
+
+**4.12.2\. Commit, push y verificar**
+- QA se actualiza automáticamente con 5 elementos
+- PROD queda pendiente de aprobación (mantiene 10 elementos)
+- Aprobar deployment después de verificar QA
+- Confirmar que PROD se actualiza a 5 elementos
 
 
-<img width="1222" alt="image" src="https://github.com/user-attachments/assets/11f710b9-4ac1-4e2c-a560-7714835b2ce6">
-
-4.13\. Esperar a la finalización de la etapa de Pase a Prod y luego corroborar que en la url de la webapp_prod/weatherforecast se muestra la nueva versión coinicidente con la de QA.
-<img width="1465" alt="image" src="https://github.com/user-attachments/assets/533ac589-58e1-4f36-9356-d37a0da58220">
-
-<img width="1125" alt="image" src="https://github.com/user-attachments/assets/26256e9d-28c5-41d7-97cb-e86df429e817">
-
-4.14\. Realizar un pipeline (no release) que incluya el deploy a QA y a PROD con una aprobación manual. El pipeline debe estar construido en YAML sin utilizar el editor clásico de pipelines ni el editor clásico de pipelines de release.
- 
-### 5- Instructivos:
+## 5- Instructivos:
 #### 5.1 Crear una cuenta en Azure
 
 5.1.1\. Navigate to [https://azure.microsoft.com/es-mx/](https://azure.microsoft.com/es-mx/)
@@ -399,393 +904,107 @@ No alcanza con copiar esta guía. **Si no podés defenderlo, no se aprueba.**
 ![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/57cc8aa4-cde7-444c-8c40-b9f15a32e76c/ascreenshot.jpeg?
 
 
-#### 5.3 Crear un Pipeline de Release en Azure DevOps
+#### 5.3 Clonar una Web App a partir de un Template Deployment en Azure Portal
 
-5.3.1\. Navegar a [https://dev.azure.com/](https://dev.azure.com/azportal2024/Sample01)NOMBRE_DE_TU_ORGANIZACION
+5.3.1\. Navigate to [https://portal.azure.com/#home](https://portal.azure.com/#home)
 
 
-5.3.2\. Seleccionar el Proyecto deseado
-
-
-5.3.3\. Click "Pipelines"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/10bfa9ac-c36c-4411-b517-f45b2d5f165f/ascreenshot.jpeg?tl_px=0,143&br_px=859,624&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=83,212)
-
-
-5.3.4\. Click "Releases"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/f71931be-da25-48b1-af65-0663113baf8d/ascreenshot.jpeg?tl_px=0,155&br_px=859,636&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=85,212)
-
-
-5.3.5\. Click "New pipeline"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/556f67d2-c5f2-4624-ac84-22c94661711e/ascreenshot.jpeg?tl_px=482,267&br_px=1342,748&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=402,212)
-
-
-5.3.6\. Seleccionar template "Azure App Service Deployment" y click en "Apply"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/610cdcbb-c913-40b9-b87d-9d9c24a00880/ascreenshot.jpeg?tl_px=681,0&br_px=1541,480&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=747,199)
-
-
-5.3.7\. Cambiar el nombre de la etapa a "Deploy a QA"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/e19d9ccf-b556-48d2-9f8f-3a00a7737863/ascreenshot.jpeg?tl_px=681,94&br_px=1541,575&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=420,212)
-
-
-5.3.8\. Click here.
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/509b054f-6498-45f6-a8ec-1bd72c6f970f/ascreenshot.jpeg?tl_px=681,0&br_px=1541,480&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=816,129)
-
-
-5.3.9\. Agregar el artefacto a deployear, es el resultado del pipeline de build. Click en "Add"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/a1915d11-b8d6-44b7-8c0c-dcf46530b305/ascreenshot.jpeg?tl_px=17,0&br_px=877,480&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=402,189)
-
-
-5.3.10\. Seleccionamos el proyecto (por defecto el proyecto en el que estamos) y seleccionamos el pipeline del cual queremos sacar el artefacto a deployear. Click en "Expand"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/39cc8234-57b2-4e2b-823d-82980637b6f1/ascreenshot.jpeg?tl_px=681,160&br_px=1541,641&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=771,212)
-
-
-5.3.11\. Click en el nombre de nuestro pipeline
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/4b7dd169-a457-4b37-a9fa-588edffd70c4/ascreenshot.jpeg?tl_px=681,193&br_px=1541,674&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=566,212)
-
-
-5.3.12\. Click "Add"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/cf87276c-4e51-4837-a7ec-b25b95deba0f/ascreenshot.jpeg?tl_px=536,433&br_px=1396,914&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=402,212)
-
-
-5.3.13\. Habilitamos Continuous Deployment, cada vez que el pipeline de build se ejecute exitosamente, se disparará este pipeline de release.
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/6514f4d1-91a4-4ee8-8d47-f637f3efa17b/ascreenshot.jpeg?tl_px=31,47&br_px=890,528&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=402,212)
-
-
-5.3.14\. Habilitamos el toggle dejandolo **Habilitado**
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/e222b441-b840-4afb-bf1e-9bd27c5204d0/ascreenshot.jpeg?tl_px=498,6&br_px=1358,487&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=402,212)
-
-
-5.3.15\. Configuramos las tareas del stage. Click "1 job, 1 task"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/70a7bffa-dd25-416e-abd0-fddc69097ec4/ascreenshot.jpeg?tl_px=275,97&br_px=1135,578&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=402,212)
-
-
-5.3.16\. Buscamos nuestra suscripción creada en Azure Portal. Click "Expand"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/3270900a-3e9d-494e-bf0f-17904e91ff36/ascreenshot.jpeg?tl_px=681,62&br_px=1541,543&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=746,212)
-
-
-5.3.17\. Seleccionamos nuestra suscripción.
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/829c7cc7-fffc-45cc-8c38-2420a1219fff/ascreenshot.jpeg?tl_px=681,159&br_px=1541,640&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=645,212)
-
-
-5.3.18\. Click "Authorize". Nos pedirá nuestros datos de la cuenta de Azure Portal
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/cf53903b-a799-426b-9301-55945b4037a6/ascreenshot.jpeg?tl_px=681,61&br_px=1541,542&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=691,212)
-
-
-5.3.19\. Ingresamos nuestra cuenta de Azure Portal y hacemos click en "Siguiente"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/9af18179-fcf7-48c4-972f-bb9efd871973/ascreenshot.jpeg?tl_px=100,90&br_px=960,571&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=482,212)
-
-
-5.3.20\. Click "Send code"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/d2d6df7b-91ca-4e41-8b6b-6e8acd31fa56/ascreenshot.jpeg?tl_px=100,118&br_px=960,599&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=487,278)
-
-
-5.3.21\. Una vez recibido el código en nuestro mail, lo ingresamos y clickeamos en "Sign in"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/a4a33354-dce0-429d-b86b-e44c800dccd8/ascreenshot.jpeg?tl_px=100,118&br_px=960,599&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=468,285)
-
-
-5.3.22\. Expandimos el combo para ver las opciones disponibles y dejamos seleccionada "Web App on Windows"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/4e07dfc5-5cec-4685-b30b-02bed1c62530/ascreenshot.jpeg?tl_px=681,187&br_px=1541,668&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=756,212)
-
-
-5.3.23\. Expandimos el combo de App service Name y seleccionamos nuestra Web App creada en Azure Portal
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/5fb87794-6e23-470c-8faf-6e378ec76225/ascreenshot.jpeg?tl_px=681,284&br_px=1541,765&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=704,212)
-
-
-5.3.24\. Click "Save"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/7c796430-b452-42e0-a2bd-2aae924fdca4/ascreenshot.jpeg?tl_px=681,0&br_px=1541,480&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=447,52)
-
-
-5.3.25\. Click "OK"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/748513ed-d926-44da-8e6c-d8672e57486d/ascreenshot.jpeg?tl_px=451,360&br_px=1311,841&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=402,212)
-
-
-5.3.26\. Click here.
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/b0aa6a68-675a-41e4-9af4-0b1118849b8b/ascreenshot.jpeg?tl_px=183,76&br_px=1043,557&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=402,212)
-
-
-5.3.27\. Click "Releases"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/e667c53d-66e1-4d86-903b-d99c088f0574/ascreenshot.jpeg?tl_px=0,157&br_px=859,638&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=83,212)
-
-
-5.3.28\. Seleccionamos nuestro pipeline de Release
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/1f44eebe-623a-4d46-ba80-dbbda219378f/ascreenshot.jpeg?tl_px=0,0&br_px=859,480&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=396,152)
-
-
-5.3.29\. Click here.
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/cd6fb89c-cec9-48ab-b8dd-66c5418c00a7/ascreenshot.jpeg?tl_px=681,0&br_px=1541,480&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=776,107)
-
-
-5.3.30\. Clickeamos en Rename para renombrar nuestro pipeline de Release
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/eb6567ff-a9b7-47f5-87a5-ab7245d01c48/ascreenshot.jpeg?tl_px=681,0&br_px=1541,480&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=656,140)
-
-
-5.3.31\. Type "ReleasePipeline01"
-
-
-5.3.32\. Click "OK"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/d8c2f803-ea8f-44a9-b99e-7b6e5b3c92b5/ascreenshot.jpeg?tl_px=558,322&br_px=1418,803&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=402,212)
-
-#### 5.4 Clonar una Web App a partir de un Template Deployment en Azure Portal
-
-5.5.1\. Navigate to [https://portal.azure.com/#home](https://portal.azure.com/#home)
-
-
-5.5.2\. Click en el Grupo de Recursos
+5.3.2\. Click en el Grupo de Recursos
 
 ![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/6264b362-a4c8-4b2b-84b6-8db640b42c74/ascreenshot.jpeg?tl_px=0,0&br_px=2182,1664&force_format=jpeg&q=100&width=1120.0&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=178,454)
 
 
-5.5.3\. Crear un nuevo recurso
+5.3.3\. Crear un nuevo recurso
 
 ![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/b6873b5f-643b-4333-a7e8-082034aa178b/ascreenshot.jpeg?tl_px=0,0&br_px=1719,961&force_format=jpeg&q=100&width=1120.0&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=400,169)
 
 
-5.5.4\. Buscar el recurso "Template Deployment (implementar mediante plantillas personalizadas)" y seleccionarlo
+5.3.4\. Buscar el recurso "Template Deployment (implementar mediante plantillas personalizadas)" y seleccionarlo
 
 ![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/1c2f28d6-9d90-4eae-8787-8e2c2d5c6674/ascreenshot.jpeg?tl_px=0,565&br_px=1719,1526&force_format=jpeg&q=100&width=1120.0&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=371,276)
 
 
-5.5.5\. Click "Crear"
+5.3.5\. Click "Crear"
 
 ![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/14e4d429-e482-42bb-9ed2-8767fd40c1fe/ascreenshot.jpeg?tl_px=19,127&br_px=1739,1088&force_format=jpeg&q=100&width=1120.0&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=524,277)
 
 
-5.5.6\. Click "Cree su propia plantilla en el editor."
+5.3.6\. Click "Cree su propia plantilla en el editor."
 
 ![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/27bdd534-57f4-4174-b3df-783e0a7a1746/ascreenshot.jpeg?tl_px=0,59&br_px=1719,1020&force_format=jpeg&q=100&width=1120.0&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=300,277)
 
 
-5.5.7\. Descomprimir el archivo template.zip que se descargó en los pasos 31 y 32 del instructivo "**Crear una Web App en Azure Portal"**
+5.3.7\. Descomprimir el archivo template.zip que se descargó en los pasos 31 y 32 del instructivo "**Crear una Web App en Azure Portal"**
 
 ![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/9c9eebbf-f5d5-44f2-a49e-0661b5060e8a/screenshot.jpeg?tl_px=0,0&br_px=1522,996&force_format=jpeg&q=100&width=1120.0)
 
 
-5.5.8\. Cargamos el archivo template.json que se extrajo del archivo template.zip que se descargó en los pasos 31 y 32 del instructivo "**Crear una Web App en Azure Portal"**
+5.3.8\. Cargamos el archivo template.json que se extrajo del archivo template.zip que se descargó en los pasos 31 y 32 del instructivo "**Crear una Web App en Azure Portal"**
 
 ![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/0ef39e7d-5e48-44be-9bdb-4c06e96d7e0a/ascreenshot.jpeg?tl_px=0,0&br_px=1719,961&force_format=jpeg&q=100&width=1120.0&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=461,156)
 
 
-5.5.9\. Click "Guardar"
+5.3.9\. Click "Guardar"
 
 ![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/a9263d36-b7d1-46fb-b299-2e8eabf79e30/ascreenshot.jpeg?tl_px=0,0&br_px=2182,1664&force_format=jpeg&q=100&width=1120.0&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=40,791)
 
 
-5.5.10\. Click "Editar parámetros"
+5.3.10\. Click "Editar parámetros"
 
 ![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/51078d96-f220-416c-860f-969f4e91969c/ascreenshot.jpeg?tl_px=0,0&br_px=2182,1281&force_format=jpeg&q=100&width=1120.0&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=502,286)
 
 
-5.5.11\. Cargamos el archivo parameters.json que se extrajo del archivo template.zip que se descargó en los pasos 31 y 32 del instructivo "**Crear una Web App en Azure Portal"**
+5.3.11\. Cargamos el archivo parameters.json que se extrajo del archivo template.zip que se descargó en los pasos 31 y 32 del instructivo "**Crear una Web App en Azure Portal"**
 
 ![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/4504a6c3-50c6-4746-8615-301e5461f840/ascreenshot.jpeg?tl_px=0,0&br_px=1719,961&force_format=jpeg&q=100&width=1120.0&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=107,165)
 
 
-5.5.12\. Click "Guardar"
+5.3.12\. Click "Guardar"
 
 ![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/7c5f7826-e42e-4b3a-b08e-6dc3ab5bd16c/ascreenshot.jpeg?tl_px=0,702&br_px=1719,1664&force_format=jpeg&q=100&width=1120.0&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=43,550)
 
 
-5.5.13\. Click "Editar parámetros"
+5.3.13\. Click "Editar parámetros"
 
 ![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/4a68dfcf-97e1-458f-9581-ae1f5e5488a3/ascreenshot.jpeg?tl_px=168,167&br_px=1887,1128&force_format=jpeg&q=100&width=1120.0&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=524,277)
 
 
-5.5.14\. Cambiamos el nombre de nuestra Web App agregandole el sufijo "-PROD"
+5.3.14\. Cambiamos el nombre de nuestra Web App agregandole el sufijo "-PROD"
 
 ![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/17b563b6-bb8b-4d12-92df-7db192f5039f/ascreenshot.jpeg?tl_px=0,293&br_px=1719,1254&force_format=jpeg&q=100&width=1120.0&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=315,277)
 
 
-5.5.15\. Type "-PROD"
+5.3.15\. Type "-PROD"
 
 
-5.5.16\. Click em Guardar
+5.3.16\. Click em Guardar
 
 ![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/4aa5598f-03e1-4ef9-82ac-57d74b060c6f/user_cropped_screenshot.jpeg?tl_px=0,382&br_px=2182,1664&force_format=jpeg&q=100&width=1120.0&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=14,603)
 
 
-5.5.17\. Click "Siguiente"
+5.3.17\. Click "Siguiente"
 
 ![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/834d9d7b-89fe-436e-8d6d-1dba404a0c1c/ascreenshot.jpeg?tl_px=0,0&br_px=2182,1664&force_format=jpeg&q=100&width=1120.0&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=160,782)
 
 
-5.5.18\. Click "Crear"
+5.3.18\. Click "Crear"
 
 ![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/88709564-ee13-449c-9603-7e2c88ab219d/ascreenshot.jpeg?tl_px=0,0&br_px=2182,1664&force_format=jpeg&q=100&width=1120.0&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=257,787)
 
 
-5.5.19\. Click "Ir al grupo de recursos"
+5.3.19\. Click "Ir al grupo de recursos"
 
 ![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/289c3cc8-4754-4ec0-b5e3-c7bdc65648af/ascreenshot.jpeg?tl_px=0,0&br_px=2182,1664&force_format=jpeg&q=100&width=1120.0&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=380,446)
 
 
-5.5.20\. Actualizamos el Grupo de Recursos
+5.3.20\. Actualizamos el Grupo de Recursos
 
 ![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/61ee0cc7-7936-4a4f-bae5-91a842c35817/ascreenshot.jpeg?tl_px=0,0&br_px=2182,1281&force_format=jpeg&q=100&width=1120.0&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=713,113)
 
 
-5.5.21\. Vemos que hemos clonado la WebApp correctamente:
+5.3.21\. Vemos que hemos clonado la WebApp correctamente:
 
 ![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/44d1178a-26c3-43aa-b48e-5f2bc79b7c5a/user_cropped_screenshot.jpeg?tl_px=314,25&br_px=2607,1306&force_format=jpeg&q=100&width=1120.0)
-
-#### 5.5 Agregar una etapa de Deploy a Prod en Azure Release Pipelines 
-
-5.5.1\. Navegar a  [https://dev.azure.com/](https://dev.azure.com/ingsoft3ucc/Sample02/_release?_a=releases&view=mine&definitionId=3)NOMBRE_ORGANIZACION
-
-
-5.5.2\. Click "Pipelines"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/7a0c963c-c702-4078-9480-55734f2387c0/ascreenshot.jpeg?tl_px=0,0&br_px=2182,1281&force_format=jpeg&q=100&width=1120.0&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=55,209)
-
-
-5.5.3\. Click "Releases"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/f1126322-76e6-48e8-b404-4353ec24fdc6/ascreenshot.jpeg?tl_px=0,265&br_px=1547,1130&force_format=jpeg&q=100&width=1120.0&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=89,277)
-
-
-5.5.4\. Click "Edit"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/5444efc1-4239-4afb-baf4-ab14c526db56/ascreenshot.jpeg?tl_px=634,0&br_px=2182,865&force_format=jpeg&q=100&width=1120.0&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=722,86)
-
-
-5.5.5\. Click en "Clone".
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/4af167d3-0efc-4870-be03-da87c08f3f5b/ascreenshot.jpeg?tl_px=536,283&br_px=2083,1148&force_format=jpeg&q=100&width=1120.0&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=524,277)
-
-
-5.5.6\. Click aqui.
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/a4161249-f801-4fa7-8f03-3a92eba1ccbb/ascreenshot.jpeg?tl_px=634,142&br_px=2182,1007&force_format=jpeg&q=100&width=1120.0&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=819,277)
-
-
-5.5.7\. Renombrar la etapa a "Deploy a Prod".
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/074968ec-28e0-4f1b-be50-164e1434cbbd/ascreenshot.jpeg?tl_px=634,175&br_px=2182,1040&force_format=jpeg&q=100&width=1120.0&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=644,277)
-
-
-5.5.8\. Click here.
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/5ffe3f11-eb4f-45fc-a128-eef170efe723/ascreenshot.jpeg?tl_px=634,0&br_px=2182,865&force_format=jpeg&q=100&width=1120.0&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=1063,168)
-
-
-5.5.9\. Click "1 job, 1 task"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/13046f56-19b8-4b89-8e95-f5a74ff6757c/ascreenshot.jpeg?tl_px=634,177&br_px=2182,1042&force_format=jpeg&q=100&width=1120.0&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=764,277)
-
-
-5.5.10\. Expandimos la lista de Web Apps
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/fe4fce2d-6e65-41a1-9e84-de76556e6831/ascreenshot.jpeg?tl_px=634,432&br_px=2182,1297&force_format=jpeg&q=100&width=1120.0&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=985,277)
-
-
-5.5.11\. Seleccionar nuestra WebApp de PROD
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/2bc1dfeb-7b98-4230-97ed-8e66612698d5/ascreenshot.jpeg?tl_px=634,529&br_px=2182,1394&force_format=jpeg&q=100&width=1120.0&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=860,277)
-
-
-5.5.12\. Click "Azure App Service deploy"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/d8bce40b-6abf-407b-8310-87164da7a94b/ascreenshot.jpeg?tl_px=331,90&br_px=1878,955&force_format=jpeg&q=100&width=1120.0&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=524,277)
-
-
-5.5.13\. Click "Save"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/60dd21e8-96c9-4917-95ba-c1dd8f5090d4/ascreenshot.jpeg?tl_px=634,0&br_px=2182,865&force_format=jpeg&q=100&width=1120.0&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=726,60)
-
-
-5.5.14\. Click "OK"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/349c21f3-f5c9-4321-ae32-900ec1af8697/ascreenshot.jpeg?tl_px=484,547&br_px=2031,1412&force_format=jpeg&q=100&width=1120.0&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=524,277)
-
-####5.6 Agregar Aprobación Manual para el Paso a Prod en un Azure Release Pipeline
-
-5.6.1\. Navegar a [https://dev.azure.com/ ](https://dev.azure.com/ingsoft3ucc/Sample02/_build)NOMBRE_ORGANIZACION
-
-
-5.6.2\. Click "Releases"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/4c1f29ac-05c1-4eec-8ce6-33558b87f5c6/ascreenshot.jpeg?tl_px=0,279&br_px=1547,1144&force_format=jpeg&q=100&width=1120.0&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=101,277)
-
-
-5.6.3\. Click en Edit.
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/9398590b-c897-4b60-8558-525e39f6074b/ascreenshot.jpeg?tl_px=634,0&br_px=2182,865&force_format=jpeg&q=100&width=1120.0&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=717,83)
-
-
-5.6.4\. Click en "Pre-deployment conditions"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/b538eb66-cb9b-488c-86ed-64ca48a47cbc/ascreenshot.jpeg?tl_px=634,177&br_px=2182,1042&force_format=jpeg&q=100&width=1120.0&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=715,277)
-
-
-5.6.5\. Habilitar las "Pre-deployment conditions"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/fe1bf373-7760-4958-b4b2-dcfcf1a6c21f/ascreenshot.jpeg?tl_px=634,798&br_px=2182,1664&force_format=jpeg&q=100&width=1120.0&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=928,283)
-
-
-5.6.6\. Click en "Search users and groups for approvers" para agregar a los usuarios que pueden aprobar el pase a prod.
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/a76d1832-5c2b-4a45-b56d-574a10a33923/ascreenshot.jpeg?tl_px=634,353&br_px=2182,1218&force_format=jpeg&q=100&width=1120.0&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=614,277)
-
-
-5.6.7\. Seleccionar un usuario
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/75f34bd8-1e7b-4cba-afea-d4dbbf55f9e1/ascreenshot.jpeg?tl_px=634,403&br_px=2182,1268&force_format=jpeg&q=100&width=1120.0&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=601,277)
-
-
-5.6.8\. Ver que siginifica la propiedad Timeout
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/6fdfbcc4-541b-40e4-8592-1bce10717be6/ascreenshot.jpeg?tl_px=521,418&br_px=2068,1283&force_format=jpeg&q=100&width=1120.0&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=523,276)
-
-
-5.6.9\. Click here.
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/48f71632-8c55-42b4-ade5-612184abf539/ascreenshot.jpeg?tl_px=634,0&br_px=2182,865&force_format=jpeg&q=100&width=1120.0&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=1057,158)
-
-
-5.6.10\. Click "Save"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/033c1a25-7ac8-4b8d-81e9-a22588d2e1b7/ascreenshot.jpeg?tl_px=634,0&br_px=2182,865&force_format=jpeg&q=100&width=1120.0&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=734,62)
-
-
-5.6.11\. Click the "Comment" field.
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/9526005e-48b0-43dc-8ba4-cf138807b1a8/ascreenshot.jpeg?tl_px=491,375&br_px=2038,1240&force_format=jpeg&q=100&width=1120.0&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=524,277)
-
-
-5.6.12\. Type "Se agrega aprobacion manual"
-
-
-5.6.13\. Click here.
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-01/601a17d6-c1e2-4044-a2c9-0e60bd8cbc36/ascreenshot.jpeg?tl_px=487,520&br_px=2034,1385&force_format=jpeg&q=100&width=1120.0&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=524,277)
 
 
 -
@@ -825,19 +1044,15 @@ Como líder técnico, debés:
 ### 2. Release Pipeline Configuration
 - Configurar **Release Pipeline** (Azure DevOps, GitHub Actions, AWS CodePipeline, etc.) conectado al Build Pipeline del TP04.  
 - Definir **stages** para QA y Producción con diferentes configuraciones.  
-- Implementar **deployment strategies** si corresponde (blue/green, rolling, canary).
+
 
 ### 3. Gestión de aprobaciones y gates
 - Configurar **aprobaciones manuales** para el pase a Producción.  
 - Implementar **pre/post-deployment gates** si aplica.  
 - Documentar proceso de aprobación y responsables.
 
-### 4. Estrategia de rollback
-- Implementar y documentar **plan de rollback**.  
-- Probar rollback en QA antes de aplicar en Producción.  
-- Automatizar proceso de rollback donde sea posible.
 
-### 5. Evidencias y documentación
+### 4. Evidencias y documentación
 - Capturas de configuración de servicios cloud, releases exitosos, health checks.  
 - Documentar en `decisiones.md` las decisiones técnicas tomadas.
 
@@ -902,10 +1117,10 @@ Preguntas típicas:
 
 | Criterio                                                    | Peso |
 |-------------------------------------------------------------|------|
-| Release Pipeline funcionando (QA + PROD)                   | 25%  |
-| Configuración correcta de servicios cloud y variables      | 25%  |
-| Aprobaciones manuales y gestión de entornos                | 25%  |
-| Defensa oral: comprensión y argumentación                  | 25%  |
+| Release Pipeline funcionando (QA + PROD)                   | 20%  |
+| Configuración correcta de servicios cloud y variables      | 15%  |
+| Aprobaciones manuales y gestión de entornos                | 15%  |
+| Defensa oral: comprensión y argumentación                  | 50%  |
 
 ---
 
