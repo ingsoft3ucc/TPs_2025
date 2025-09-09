@@ -312,21 +312,140 @@ steps:
     echo "Agent OS: $(Agent.OS)"
 ```
 
-#### Variables Secretas:
-Para información sensible como passwords, tokens, etc.
+#### Variables del Pipeline (UI de Azure DevOps)
 
-**Azure Key Vault** (recomendado):
+**¿Para qué sirven?**
+- Almacenar valores que cambian según ejecución (versiones, entornos, configuraciones)
+- Permitir override manual cuando se ejecuta el pipeline
+- Gestionar información sensible (passwords, tokens)
+
+**Cómo crear Variables del Pipeline:**
+1. Abrir tu pipeline en Azure DevOps
+2. Click "Edit"
+3. Click "Variables" (esquina superior derecha)
+4. Click "+ New variable"
+5. Configurar:
+   - **Name**: nombre de la variable (ej: `webAppName`)
+   - **Value**: valor por defecto (ej: `mi-app-qa`)
+   - **Keep this value secret**: ☑️ para passwords/tokens
+   - **Let users override**: ☑️ para permitir cambios en ejecución
+
+#### Cómo usar Variables en YAML:
+
+**Referencia básica en YAML:**
 ```yaml
-- task: AzureKeyVault@2
-  inputs:
-    azureSubscription: 'azure-connection'
-    keyVaultName: 'mi-key-vault'
-    secretsFilter: 'database-password,api-key'
+variables:
+  # Variables definidas en el YAML
+  buildConfig: 'Release'
+  
+stages:
+- stage: Deploy
+  jobs:
+  - job: DeployApp
+    steps:
+    - task: AzureWebApp@1
+      inputs:
+        appName: '$(webAppName)'        # Variable del Pipeline UI
+        configuration: '$(buildConfig)' # Variable del YAML
 ```
 
-**Variable Groups con Secrets:**
-1. En Variable Groups, marcar variable como "Secret"
-2. El valor se oculta y encripta automáticamente
+**Usar variables en scripts:**
+
+**PowerShell:**
+```yaml
+- task: PowerShell@2
+  inputs:
+    script: |
+      Write-Host "App: ${env:WEBAPPNAME}"
+      Write-Host "Config: ${env:BUILDCONFIG}"
+      # Las variables se convierten a MAYÚSCULAS y . → _
+```
+
+**Bash:**
+```yaml
+- task: Bash@3
+  inputs:
+    script: |
+      echo "App: $WEBAPPNAME"
+      echo "Config: $BUILDCONFIG"
+      # Variables automáticamente disponibles como env vars
+```
+
+**Batch/CMD:**
+```yaml
+- task: CmdLine@2
+  inputs:
+    script: |
+      echo App: %WEBAPPNAME%
+      echo Config: %BUILDCONFIG%
+```
+
+#### Ejemplo práctico completo:
+
+**Variables del Pipeline (creadas en UI):**
+- `webAppNameQA` = "miapp-qa-2025"
+- `webAppNameProd` = "miapp-prod-2025"
+- `azureSubscription` = "Visual Studio Enterprise"
+- `dbPassword` = "••••••••" (marcada como secret)
+
+**Pipeline YAML usando las variables:**
+```yaml
+trigger:
+- main
+
+variables:
+  buildConfiguration: 'Release'
+
+stages:
+- stage: Build
+  jobs:
+  - job: BuildJob
+    steps:
+    - script: 'echo Building with $(buildConfiguration)'
+    - task: DotNetCoreCLI@2
+      inputs:
+        projects: '**/*.csproj'
+        arguments: '--configuration $(buildConfiguration)'
+
+- stage: DeployQA
+  jobs:
+  - deployment: QADeploy
+    environment: 'QA'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: AzureWebApp@1
+            inputs:
+              azureSubscription: '$(azureSubscription)'  # Variable del UI
+              appName: '$(webAppNameQA)'                 # Variable del UI
+          
+          - task: PowerShell@2
+            inputs:
+              script: |
+                Write-Host "Deployed to: ${env:WEBAPPNAMEQA}"
+                # Conectar a DB con: ${env:DBPASSWORD}
+
+- stage: DeployProd
+  dependsOn: DeployQA
+  jobs:
+  - deployment: ProdDeploy
+    environment: 'Production'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: AzureWebApp@1
+            inputs:
+              azureSubscription: '$(azureSubscription)'
+              appName: '$(webAppNameProd)'              # Variable del UI
+```
+
+#### Ventajas de Variables del Pipeline:
+- **Override en ejecución**: Cambiar valores sin editar código
+- **Reutilización**: Misma variable en múltiples stages
+- **Seguridad**: Variables secretas automáticamente ocultas
+- **Flexibilidad**: Diferentes valores para diferentes ejecuciones
 
 ---
 
