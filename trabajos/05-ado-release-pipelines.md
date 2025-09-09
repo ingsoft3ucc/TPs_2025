@@ -1395,11 +1395,11 @@ env:
 
 -
 
-# Trabajo Práctico 05 – Azure DevOps Release Pipelines (2025)
+# Trabajo Práctico 05 –  DevOps CICD Pipelines (2025)
 
 ## 🎯 Objetivo
 
-Implementar un **Release Pipeline completo** que automatice el despliegue de una aplicación desde **QA hasta Producción** utilizando **servicios cloud de tu elección** (Azure Web Apps, AWS EC2/ECS, Google Cloud Run, etc.), con **aprobaciones manuales** y **estrategias de rollback**.
+Implementar un **CICD Pipeline completo** que automatice el build y despliegue de una aplicación desde **QA hasta Producción** utilizando **servicios cloud de tu elección** (Azure Web Apps, AWS EC2/ECS, Google Cloud Run, etc.), con **aprobaciones manuales** y **estrategias de rollback**.
 
 Este trabajo se aprueba **solo si podés explicar qué hiciste, por qué lo hiciste y cómo lo resolviste**.
 
