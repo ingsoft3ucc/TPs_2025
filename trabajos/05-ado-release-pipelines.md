@@ -52,12 +52,17 @@ Esta presentación resume los conceptos principales que vas a ver en esta guía 
 - **Entornos múltiples:** QA, Staging, Production con diferentes configuraciones y aprobaciones.
 - **Pipeline único:** Un solo pipeline YAML maneja tanto CI como CD con múltiples stages.
 
-### ¿Por qué YAML Pipelines en lugar de Release Pipelines clásicos?
-- Los **Release Pipelines clásicos están discontinuados** y Microsoft recomienda migrar a YAML.
-- **Pipeline as Code**: configuración versionada en el repositorio junto al código.
-- **Mayor flexibilidad**: lógica condicional, loops, variables complejas y templates reutilizables.
-- **Environments**: control de **aprobaciones** y **gates** entre entornos directamente en YAML.
-- **Deployment jobs**: estrategias avanzadas (blue/green, canary, rolling) nativamente soportadas.
+### Herramientas de CI/CD disponibles
+- **Azure DevOps**: Release Pipelines clásicos están discontinuados, usar YAML Pipelines
+- **GitHub Actions**: Pipeline as Code nativo, integración perfecta con GitHub
+- **AWS CodePipeline**: Integrado con servicios AWS (EC2, ECS, Lambda)
+- **GitLab CI/CD**: Pipeline YAML integrado, runners propios o compartidos
+
+### Ventajas de Pipeline as Code (YAML/GitHub Actions):
+- **Configuración versionada**: Pipeline junto al código en el repositorio
+- **Mayor flexibilidad**: Lógica condicional, variables dinámicas, reutilización
+- **Environments**: Control de aprobaciones y gates entre entornos
+- **Estrategias de deployment**: Soporte nativo para diferentes patrones de despliegue
 
 ### Entornos y Estrategias
 
@@ -464,7 +469,11 @@ stages:
 
 ## 4- Desarrollo:
 
-### 4.1\. Crear cuenta en Azure y configurar recursos
+> **💡 Alternativa con Google Cloud Run + GitHub Actions**: Si preferís usar Google Cloud Run en lugar de Azure Web Apps y GitHub Actions en lugar de Azure DevOps, podés seguir la **[Sección 4B](#4b-desarrollo-alternativo-google-cloud-run--github-actions)** más abajo.
+
+### 4A- Desarrollo con Azure DevOps + Azure Web Apps:
+
+### 4A.1\. Crear cuenta en Azure y configurar recursos
 
 **4.1.1\. Crear cuenta Azure**
 - Seguir las instrucciones de la sección 5.1 para crear cuenta gratuita
@@ -481,7 +490,7 @@ stages:
 - Crear Web App PROD: `webapp-tp05-prod-[apellido]`
 - Usar el mismo Resource Group y App Service Plan
 
-### 4.2\. Configurar Service Connection en Azure DevOps
+### 4A.2\. Configurar Service Connection en Azure DevOps
 
 **4.2.1\. Crear Service Connection**
 - Ir a `https://dev.azure.com/[TUORGANIZACION]/` > Project Settings > Service connections
@@ -491,7 +500,7 @@ stages:
 - Service connection name: `azure-tp05-connection`
 - Grant access permission to all pipelines: ✅
 
-### 4.3\. Crear Pipeline YAML básico (solo CI)
+### 4A.3\. Crear Pipeline YAML básico (solo CI)
 
 **4.3.1\. Crear archivo `azure-pipelines.yml` en la raíz del repositorio:**
 
@@ -560,14 +569,14 @@ stages:
 - Seleccionar `/azure-pipelines.yml`
 - Click "Run"
 
-### 4.4\. Verificar el build inicial
+### 4A.4\. Verificar el build inicial
 
 **4.4.1\. Verificar ejecución del pipeline**
 - Verificar que todas las etapas se ejecuten correctamente
 - Verificar que se generen los artifacts
 - Revisar los logs en caso de errores
 
-### 4.5\. Extender pipeline para incluir deploy a QA
+### 4A.5\. Extender pipeline para incluir deploy a QA
 
 **4.5.1\. Crear Environments en Azure DevOps**
 - Ir a Pipelines > Environments
@@ -655,7 +664,7 @@ stages:
               deploymentMethod: 'auto'
 ```
 
-### 4.6\. Probar el deployment a QA
+### 4A.6\. Probar el deployment a QA
 
 **4.6.1\. Hacer un cambio en el código**
 - Modificar `WeatherForecastController.cs` para devolver 7 pronósticos:
@@ -686,7 +695,7 @@ git push origin main
 - Navegar a `https://webapp-tp05-qa-[apellido].azurewebsites.net/weatherforecast`
 - Verificar que devuelve 7 elementos
 
-### 4.7\. Agregar stage de deployment a PROD
+### 4A.7\. Agregar stage de deployment a PROD
 
 **4.7.1\. Actualizar `azure-pipelines.yml` para incluir PROD:**
 
@@ -790,7 +799,7 @@ stages:
               deploymentMethod: 'auto'
 ```
 
-### 4.8\. Configurar aprobación manual para PROD
+### 4A.8\. Configurar aprobación manual para PROD
 
 **4.8.1\. Configurar Environment PROD con aprobación**
 - Ir a Pipelines > Environments > PROD
@@ -801,7 +810,7 @@ stages:
 - Minimum approvers: 1
 - Save
 
-### 4.9\. Probar el flujo completo con aprobación
+### 4A.9\. Probar el flujo completo con aprobación
 
 **4.9.1\. Cambiar código a 10 pronósticos**
 ```csharp
@@ -822,7 +831,7 @@ git push origin main
 - Verificar QA: `https://webapp-tp05-qa-[apellido].azurewebsites.net/weatherforecast`
 - Verificar PROD: `https://webapp-tp05-prod-[apellido].azurewebsites.net/weatherforecast` (debería tener versión anterior)
 
-### 4.10\. Aprobar deployment a PROD
+### 4A.10\. Aprobar deployment a PROD
 
 **4.10.1\. Aprobar desde la interfaz**
 - Ir a Pipelines > Environment > PROD > Pending deployments
@@ -834,7 +843,7 @@ git push origin main
 - Se puede posponer la aprobación hasta una fecha específica
 - Se puede rechazar con comentarios
 
-### 4.11\. Verificar deployment final
+### 4A.11\. Verificar deployment final
 
 **4.11.1\. Confirmar deployment exitoso**
 - Esperar que termine el stage "Deploy to PROD"
@@ -842,7 +851,7 @@ git push origin main
 - Confirmar que ahora devuelve 10 elementos
 - Verificar que QA y PROD tienen la misma versión
 
-### 4.12\. Probar un segundo ciclo con aprobación pospuesta
+### 4A.12\. Probar un segundo ciclo con aprobación pospuesta
 
 **4.12.1\. Cambiar a 5 pronósticos**
 ```csharp
@@ -855,6 +864,241 @@ return Enumerable.Range(1, 5).Select(index => new WeatherForecast  // Cambiar a 
 - Aprobar deployment después de verificar QA
 - Confirmar que PROD se actualiza a 5 elementos
 
+
+### 4B- Desarrollo Alternativo: Google Cloud Run + GitHub Actions
+
+#### 4B.1\. Configurar Google Cloud Project
+
+**4B.1.1\. Crear cuenta en Google Cloud**
+- Navegar a https://cloud.google.com/
+- Crear cuenta gratuita (incluye $300 USD de créditos)
+- Crear nuevo proyecto: `tp05-ingsoft3-2025`
+
+**4B.1.2\. Habilitar APIs necesarias**
+```bash
+gcloud services enable cloudbuild.googleapis.com
+gcloud services enable run.googleapis.com
+gcloud services enable containerregistry.googleapis.com
+```
+
+**4B.1.3\. Crear Cloud Run services**
+- Crear servicio QA: `tp05-api-qa-[apellido]`
+- Crear servicio PROD: `tp05-api-prod-[apellido]`
+- Región: `us-central1`
+- Configuración: CPU 1, Memory 512Mi
+
+#### 4B.2\. Configurar GitHub Actions
+
+**4B.2.1\. Configurar Service Account**
+```bash
+# Crear service account
+gcloud iam service-accounts create github-actions-sa \
+    --description="Service account for GitHub Actions" \
+    --display-name="GitHub Actions SA"
+
+# Asignar permisos
+gcloud projects add-iam-policy-binding tp05-ingsoft3-2025 \
+    --member="serviceAccount:github-actions-sa@tp05-ingsoft3-2025.iam.gserviceaccount.com" \
+    --role="roles/run.admin"
+    
+gcloud projects add-iam-policy-binding tp05-ingsoft3-2025 \
+    --member="serviceAccount:github-actions-sa@tp05-ingsoft3-2025.iam.gserviceaccount.com" \
+    --role="roles/storage.admin"
+```
+
+**4B.2.2\. Crear key y agregarlo a GitHub Secrets**
+```bash
+gcloud iam service-accounts keys create key.json \
+    --iam-account=github-actions-sa@tp05-ingsoft3-2025.iam.gserviceaccount.com
+```
+
+- Ir a tu repositorio en GitHub > Settings > Secrets and variables > Actions
+- Agregar secrets:
+  - `GCP_SA_KEY`: contenido del archivo key.json
+  - `GCP_PROJECT_ID`: tp05-ingsoft3-2025
+
+#### 4B.3\. Crear GitHub Actions Workflow (CI/CD)
+
+**4B.3.1\. Crear `.github/workflows/deploy.yml`:**
+
+```yaml
+name: Deploy to Google Cloud Run
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  GAR_LOCATION: us-central1
+  REPOSITORY: tp05-repo
+  SERVICE_QA: tp05-api-qa-${{ github.actor }}
+  SERVICE_PROD: tp05-api-prod-${{ github.actor }}
+  REGION: us-central1
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --no-restore --configuration Release
+
+    - name: Test
+      run: dotnet test --no-build --configuration Release
+
+    - name: Publish
+      run: dotnet publish -c Release -o ./publish
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: published-app
+        path: ./publish
+
+  deploy-qa:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Download artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: published-app
+        path: ./publish
+
+    - name: Google Auth
+      uses: google-github-actions/auth@v1
+      with:
+        credentials_json: '${{ secrets.GCP_SA_KEY }}'
+
+    - name: Build Docker image
+      run: |
+        gcloud builds submit \
+          --tag $GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$SERVICE_QA:$GITHUB_SHA
+
+    - name: Deploy to Cloud Run QA
+      run: |
+        gcloud run deploy $SERVICE_QA \
+          --image $GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$SERVICE_QA:$GITHUB_SHA \
+          --platform managed \
+          --region $REGION \
+          --allow-unauthenticated
+
+  deploy-prod:
+    runs-on: ubuntu-latest
+    needs: deploy-qa
+    if: github.ref == 'refs/heads/main'
+    environment: production
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Google Auth
+      uses: google-github-actions/auth@v1
+      with:
+        credentials_json: '${{ secrets.GCP_SA_KEY }}'
+
+    - name: Deploy to Cloud Run PROD
+      run: |
+        gcloud run deploy $SERVICE_PROD \
+          --image $GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$SERVICE_QA:$GITHUB_SHA \
+          --platform managed \
+          --region $REGION \
+          --allow-unauthenticated
+```
+
+#### 4B.4\. Crear Dockerfile
+
+**4B.4.1\. Crear `Dockerfile` en la raíz del proyecto:**
+
+```dockerfile
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+WORKDIR /app
+EXPOSE 8080
+
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+COPY ["*.csproj", "./"]
+RUN dotnet restore
+COPY . .
+RUN dotnet build -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish -c Release -o /app/publish
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "YourApp.dll"]
+```
+
+#### 4B.5\. Configurar Environment Protection en GitHub
+
+**4B.5.1\. Crear Production Environment**
+- Ir a repositorio > Settings > Environments
+- Click "New environment"
+- Nombre: "production"
+- Configurar Protection rules:
+  - ☑️ Required reviewers: agregar tu usuario
+  - ☑️ Wait timer: 0 minutes
+
+#### 4B.6\. Probar el flujo completo
+
+**4B.6.1\. Modificar código para 7 pronósticos**
+```csharp
+return Enumerable.Range(1, 7).Select(index => new WeatherForecast
+```
+
+**4B.6.2\. Commit y push**
+```bash
+git add .
+git commit -m "Change forecast count to 7 items"
+git push origin main
+```
+
+**4B.6.3\. Verificar deployment**
+- Ver ejecución en GitHub Actions
+- Build y Deploy QA se ejecutan automáticamente
+- Deploy PROD queda pendiente de aprobación
+- Verificar QA: URL proporcionada por Cloud Run
+- PROD mantiene versión anterior hasta aprobación
+
+**4B.6.4\. Aprobar deployment a PROD**
+- Ir a Actions tab > Workflow run > Review deployments
+- Seleccionar "production" > Approve and deploy
+
+#### 4B.7\. Variables en GitHub Actions
+
+**Configurar en Repository Settings:**
+- Repository secrets: información sensible
+- Repository variables: valores públicos
+- Environment secrets: específicos por entorno
+
+**Ejemplo de uso:**
+```yaml
+env:
+  APP_NAME: ${{ vars.APP_NAME }}
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+  ENVIRONMENT: ${{ vars.ENVIRONMENT }}
+```
+
+---
 
 ## 5- Instructivos:
 
@@ -1192,7 +1436,7 @@ Como líder técnico, debés:
 - Documentar proceso de aprobación y responsables.
 
 
-### 4. Evidencias y documentación
+### 4A. Evidencias y documentación
 - Capturas de configuración de servicios cloud, releases exitosos, health checks.  
 - Documentar en `decisiones.md` las decisiones técnicas tomadas.
 
