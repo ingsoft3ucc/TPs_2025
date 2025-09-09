@@ -209,6 +209,125 @@ stages:
 - **`always()`**: Siempre se ejecuta, independientemente del resultado
 - **`canceled()`**: Solo si el pipeline fue cancelado
 
+### Variables en Azure DevOps
+
+#### ¿Qué son las Variables?
+Las **variables** almacenan valores que pueden reutilizarse en todo el pipeline, como connection strings, URLs, nombres de aplicaciones, etc.
+
+#### Tipos de Variables:
+
+**Variables en YAML** (definidas en el pipeline):
+```yaml
+variables:
+- name: 'appName'
+  value: 'mi-aplicacion'
+- name: 'environment'
+  value: 'production'
+
+stages:
+- stage: Deploy
+  jobs:
+  - job: DeployApp
+    steps:
+    - script: 'echo Desplegando $(appName) en $(environment)'
+```
+
+**Variables por Stage**:
+```yaml
+stages:
+- stage: QA
+  variables:
+  - name: 'environment'
+    value: 'qa'
+  - name: 'webAppName'  
+    value: 'miapp-qa'
+  jobs:
+  - job: Deploy
+    steps:
+    - script: 'echo Deploy to $(webAppName)'
+
+- stage: PROD
+  variables:
+  - name: 'environment'
+    value: 'prod'
+  - name: 'webAppName'
+    value: 'miapp-prod'
+```
+
+#### Dónde crear Variables en Azure DevOps:
+
+**1. Variable Groups (Grupos de Variables):**
+- **Ubicación**: Library > Variable groups
+- **Uso**: Compartir variables entre múltiples pipelines
+- **Ejemplo**: Configuraciones de base de datos, URLs de APIs
+
+**Pasos para crear Variable Group:**
+1. Ir a Azure DevOps > Pipelines > Library
+2. Click "+ Variable group"  
+3. Nombre: "QA-Variables"
+4. Agregar variables:
+   - `dbConnectionString`: "Server=qa-db;Database=myapp"
+   - `apiUrl`: "https://api-qa.miapp.com"
+5. Save
+
+**Usar Variable Group en YAML:**
+```yaml
+variables:
+- group: 'QA-Variables'  # Importa todas las variables del grupo
+
+stages:
+- stage: Deploy
+  jobs:
+  - job: DeployApp
+    steps:
+    - script: 'echo API URL: $(apiUrl)'
+    - script: 'echo DB: $(dbConnectionString)'
+```
+
+**2. Pipeline Variables:**
+- **Ubicación**: Pipeline > Edit > Variables tab
+- **Uso**: Variables específicas de un pipeline
+- **Alcance**: Todo el pipeline
+
+**Pasos para crear Pipeline Variables:**
+1. Abrir tu pipeline en Azure DevOps
+2. Click "Edit" 
+3. Click "Variables" (esquina superior derecha)
+4. Click "+ Add"
+5. Nombre: "buildConfiguration", Valor: "Release"
+6. Save
+
+**3. Environment Variables:**
+- **Ubicación**: Pipelines > Environments > [Environment] > Variables
+- **Uso**: Variables específicas de un entorno (QA, PROD)
+- **Ejemplo**: URLs específicas por entorno
+
+#### Variables Predefinidas del Sistema:
+```yaml
+steps:
+- script: |
+    echo "Build ID: $(Build.BuildId)"
+    echo "Source Branch: $(Build.SourceBranch)" 
+    echo "Repository Name: $(Build.Repository.Name)"
+    echo "Agent OS: $(Agent.OS)"
+```
+
+#### Variables Secretas:
+Para información sensible como passwords, tokens, etc.
+
+**Azure Key Vault** (recomendado):
+```yaml
+- task: AzureKeyVault@2
+  inputs:
+    azureSubscription: 'azure-connection'
+    keyVaultName: 'mi-key-vault'
+    secretsFilter: 'database-password,api-key'
+```
+
+**Variable Groups con Secrets:**
+1. En Variable Groups, marcar variable como "Secret"
+2. El valor se oculta y encripta automáticamente
+
 ---
 
 ## 3- Consignas a desarrollar:
