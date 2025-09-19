@@ -497,10 +497,9 @@ Este trabajo se aprueba **solo si podés explicar qué hiciste, por qué lo hici
 Como desarrollador senior, debés:
 1. Tomar la aplicación del **TP05** (o crear una nueva) con **Front + Back**.  
 2. Implementar **suite completa de pruebas unitarias** para ambos componentes.  
-3. Configurar **herramientas de cobertura de código** y alcanzar mínimo **80% de cobertura**.  
+3. Configurar **herramientas de cobertura de código** y alcanzar mínimo **60% de cobertura**.  
 4. Utilizar **mocks y stubs** para aislar dependencias externas.  
-5. Implementar **pruebas parametrizadas** y **casos edge**.  
-6. Integrar **ejecución de tests en CI/CD pipeline**.
+5. Integrar **ejecución de tests en CI/CD pipeline**.
 
 ---
 
@@ -515,7 +514,6 @@ Como desarrollador senior, debés:
 - Crear **tests para lógica de negocio** en backend.  
 - Implementar **tests para componentes** en frontend.  
 - Utilizar **patrón AAA** (Arrange, Act, Assert).  
-- Implementar **pruebas parametrizadas** con múltiples casos.
 
 ### 3. Testing avanzado
 - Crear **mocks para dependencias externas** (bases de datos, APIs, servicios).  
@@ -525,7 +523,6 @@ Como desarrollador senior, debés:
 ### 4. Integración con CI/CD
 - Configurar **ejecución automática de tests** en pipeline.  
 - Generar **reportes de cobertura**.  
-- Configurar **gates de calidad** basados en cobertura mínima.
 
 ### 5. Evidencias y documentación
 - Capturas de ejecución de tests, reportes de cobertura.  
@@ -544,7 +541,7 @@ Como desarrollador senior, debés:
 4. **Mocking y Aislamiento**
    - Implementar mocks para dependencias externas.
 5. **Cobertura de Código**
-   - Configurar herramientas y alcanzar 80%+ cobertura.
+   - Configurar herramientas y alcanzar 60%+ cobertura.
 6. **Integración CI/CD**
    - Agregar steps de testing en pipeline.
 7. **Evidencias**
