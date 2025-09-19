@@ -1252,7 +1252,7 @@ C\. Crear las pruebas unitarias necesarias en el front para validar las modifica
 
 ## 🎯 Objetivo
 
-Implementar **pruebas unitarias completas** para una aplicación **frontend y backend** utilizando frameworks de testing apropiados (XUnit para .NET, Jest/Jasmine para JavaScript/TypeScript), con **cobertura de código**, **mocks** y **patrones de testing** adecuados.
+Implementar **pruebas unitarias completas** para una aplicación **frontend y backend** utilizando frameworks de testing apropiados (XUnit para .NET, Jest/Jasmine para JavaScript/TypeScript), con **mocks** y **patrones de testing** adecuados.
 
 Este trabajo se aprueba **solo si podés explicar qué hiciste, por qué lo hiciste y cómo lo resolviste**.
 
@@ -1263,9 +1263,8 @@ Este trabajo se aprueba **solo si podés explicar qué hiciste, por qué lo hici
 Como desarrollador senior, debés:
 1. Tomar la aplicación del **TP05** (o crear una nueva) con **Front + Back**.  
 2. Implementar **suite completa de pruebas unitarias** para ambos componentes.  
-3. Configurar **herramientas de cobertura de código** y alcanzar mínimo **60% de cobertura**.  
-4. Utilizar **mocks y stubs** para aislar dependencias externas.  
-5. Integrar **ejecución de tests en CI/CD pipeline**.
+3. Utilizar **mocks y stubs** para aislar dependencias externas.  
+4. Integrar **ejecución de tests en CI/CD pipeline**.
 
 ---
 
@@ -1273,7 +1272,6 @@ Como desarrollador senior, debés:
 
 ### 1. Configuración del entorno de testing
 - Configurar **frameworks de testing** apropiados (XUnit, Jest, etc.).  
-- Instalar herramientas de **cobertura de código**.  
 - Configurar **mocking frameworks** (Moq, Sinon, etc.).
 
 ### 2. Implementación de pruebas unitarias
@@ -1288,10 +1286,9 @@ Como desarrollador senior, debés:
 
 ### 4. Integración con CI/CD
 - Configurar **ejecución automática de tests** en pipeline.  
-- Generar **reportes de cobertura**.  
 
 ### 5. Evidencias y documentación
-- Capturas de ejecución de tests, reportes de cobertura.  
+- Capturas de ejecución de tests.
 - Documentar en `decisiones.md` la estrategia de testing implementada.
 
 ---
@@ -1306,11 +1303,9 @@ Como desarrollador senior, debés:
    - Tests para componentes, servicios, utilidades.
 4. **Mocking y Aislamiento**
    - Implementar mocks para dependencias externas.
-5. **Cobertura de Código**
-   - Configurar herramientas y alcanzar 60%+ cobertura.
-6. **Integración CI/CD**
+5. **Integración CI/CD**
    - Agregar steps de testing en pipeline.
-7. **Evidencias**
+6. **Evidencias**
    - Capturas y explicación en `decisiones.md`.
 
 ---
@@ -1319,7 +1314,6 @@ Como desarrollador senior, debés:
 
 1. **Repositorio en GitHub** actualizado con:
    - **Suite completa de pruebas unitarias** funcionando.
-   - **Configuración de coverage** con reportes generados.
    - **Pipeline CI/CD** ejecutando tests automáticamente.
 
 2. **Documentación**:
@@ -1328,7 +1322,7 @@ Como desarrollador senior, debés:
      - Frameworks de testing elegidos y justificación.
      - Estrategia de mocking implementada.
      - Casos de prueba más relevantes explicados.
-     - Evidencias (capturas) de cobertura y ejecución.
+     - Evidencias (capturas) de ejecución.
 
 3. **URL del proyecto** en la planilla:  
    - [Planilla de TPs](https://docs.google.com/spreadsheets/d/1mZKJ8FH390QHjwkABokh3Ys6kMOFZGzZJ3-kg5ziELc/edit?gid=0#gid=0)
@@ -1340,7 +1334,6 @@ Como desarrollador senior, debés:
 Preguntas típicas:
 - ¿Por qué elegiste estos frameworks de testing para tu stack tecnológico?  
 - ¿Cómo decidiste qué componentes mockear y cuáles probar con implementaciones reales?  
-- ¿Qué estrategias usaste para alcanzar alta cobertura de código sin comprometer la calidad de los tests?  
 - ¿Cómo validás que tus tests realmente están probando la lógica correcta?  
 - ¿Cómo manejás los tests que dependen de estado o datos externos?
 
