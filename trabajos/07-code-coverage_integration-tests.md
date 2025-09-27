@@ -1025,7 +1025,7 @@ Como desarrollador senior, debés:
 - **NO podés usar la aplicación de ejemplo de la guía del TP04** para el trabajo real.
 - Podés usar **CUALQUIER stack tecnológico**: React + Node.js, Vue + Java, Python + Django, Ruby on Rails, etc.
 
-### **Tecnologías flexibles permitidas:**
+### **Tecnologías sugeridas:**
 
 **Frontend**: Angular, React, Vue, Svelte, Next.js, Nuxt.js, etc.
 **Backend**: .NET Core, Node.js, Java Spring Boot, Python Django/FastAPI, Ruby on Rails, Go, etc.
@@ -1066,7 +1066,7 @@ Al finalizar este trabajo práctico, deberás ser capaz de:
 
 ## 📋 Tareas que debés cumplir
 
-**🔧 Nota sobre tecnologías**: Podés usar el stack tecnológico de tu preferencia. Los ejemplos mencionan herramientas específicas, pero podés usar alternativas equivalentes.
+**🔧 Nota sobre tecnologías**: Podés usar el stack tecnológico de tu preferencia. Los ejemplos mencionan herramientas sugeridas, pero podés usar cualquier alternativa equivalente.
 
 ### 1. Code Coverage y métricas de calidad
 - Configurar **herramientas de coverage** para frontend y backend (Jest, Karma, dotnet test, pytest, etc.).
@@ -1154,8 +1154,8 @@ Al finalizar este trabajo práctico, deberás ser capaz de:
 
 1. **Repositorio actualizado** con:
    - Configuración de herramientas de coverage (para tu stack elegido)
-   - Configuración de análisis estático (SonarCloud o alternativa)
-   - Pruebas de integración E2E (Cypress, Playwright, o alternativa)
+   - Configuración de análisis estático (SonarCloud, CodeClimate, etc.)
+   - Pruebas de integración E2E (Cypress, Playwright, Selenium, etc.)
    - Pipeline CI/CD modificado con todas las integraciones
 
 2. **Documento técnico** (formato PDF o Markdown) que incluya:
