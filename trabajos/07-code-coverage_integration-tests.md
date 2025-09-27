@@ -1018,7 +1018,7 @@ Este trabajo se aprueba **solo si podés explicar qué hiciste, por qué lo hici
 ## 🧩 Escenario
 
 Como desarrollador senior, debés:
-1. Tomar la aplicación del **TP06** (con pruebas unitarias implementadas) o **crear una nueva** con **Front + Back**.
+1. Tomar la aplicación del **TP06** (con pruebas unitarias implementadas) o **crear una nueva** con **Front + Back + BD**.
 2. Implementar **herramientas de code coverage** y analizar la cobertura actual de tu código.
 3. Configurar **SonarCloud** para análisis estático y detectar **vulnerabilidades**, **bugs** y **code smells**.
 4. Desarrollar **pruebas de integración end-to-end** con **Cypress** que validen flujos completos.
