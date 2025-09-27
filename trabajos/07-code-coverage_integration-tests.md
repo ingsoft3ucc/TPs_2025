@@ -968,40 +968,6 @@ La plataforma destaca por ofrecer un tablero interactivo donde se pueden visuali
 ![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-12/723e3ef7-795f-4b68-82d6-f4d774c5b1bf/ascreenshot.jpeg?tl_px=1060,599&br_px=1920,1080&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=531,308)
 
 
-9\. Click the Scribe - Desktop App: Uso de memoria: 71.5 MB tabulador
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-12/402c13b9-b8a8-4470-992e-1170fb5586e5/ascreenshot.jpeg?tl_px=702,0&br_px=1562,480&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=402,19)
-
-
-10\. Click the Cerrar botón
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-12/28e8eb93-b226-473b-bdb5-f3fe5bfd4e89/ascreenshot.jpeg?tl_px=743,0&br_px=1603,480&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=402,22)
-
-
-11\. Click the Scribe
-Tiene acceso a este sitio botón emergente
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-12/67b50aae-bd06-4154-98b2-b73fdd42a9a2/ascreenshot.jpeg?tl_px=1060,0&br_px=1920,480&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=681,72)
-
-
-12\. Click "Start Capture"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-12/b809dec5-15d3-4894-a972-e8c3609d7d0d/ascreenshot.jpeg?tl_px=1060,137&br_px=1920,618&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=690,212)
-
-
-13\. Click "Launch Scribe Desktop"
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-12/71c8600f-ab19-4db4-a8f8-37862505635b/ascreenshot.jpeg?tl_px=1060,164&br_px=1920,645&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=579,212)
-
-
-14\. Click the Abrir Scribe Desktop.app botón
-
-![](https://ajeuwbhvhr.cloudimg.io/colony-recorder.s3.amazonaws.com/files/2024-09-12/330f3c84-4615-44e9-975d-f45857cddecc/ascreenshot.jpeg?tl_px=640,31&br_px=1500,512&force_format=jpeg&q=100&width=860&wat_scale=76&wat=1&wat_opacity=0.7&wat_gravity=northwest&wat_url=https://colony-recorder.s3.us-west-1.amazonaws.com/images/watermarks/FB923C_standard.png&wat_pad=402,212)
-
-
-
-
-
 ---
 
 # 📋 TRABAJO PRÁCTICO Nº 7
