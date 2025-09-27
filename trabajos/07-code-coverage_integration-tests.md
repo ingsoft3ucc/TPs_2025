@@ -26,6 +26,7 @@ No alcanza con copiar esta guía. **Si no podés defenderlo, no se aprueba.**
 - Esta guía NO es exhaustiva.
 - Code Coverage, análisis estático y pruebas de integración requieren **investigación y práctica fuera de clase**.
 - En 2 horas no vas a aprender todo sobre estas herramientas. **Esto es solo el punto de partida.**
+- **IMPORTANTE**: Esta guía práctica está basada en la **aplicación Angular + .NET Core del TP04**. Es solo para practicar conceptos.
 
 ---
 
@@ -1018,12 +1019,28 @@ Este trabajo se aprueba **solo si podés explicar qué hiciste, por qué lo hici
 ## 🧩 Escenario
 
 Como desarrollador senior, debés:
-1. Tomar la aplicación del **TP06** (con pruebas unitarias implementadas) o **crear una nueva** con **Front + Back + BD**.
+
+### ⚠️ **Restricción importante sobre la aplicación a usar:**
+- **SI en el TP05 usaste la aplicación de la guía del TP04**: Tenés que usar **otra aplicación diferente** para este TP.
+- **NO podés usar la aplicación de ejemplo de la guía del TP04** para el trabajo real.
+- Podés usar **CUALQUIER stack tecnológico**: React + Node.js, Vue + Java, Python + Django, Ruby on Rails, etc.
+
+### **Tecnologías flexibles permitidas:**
+
+**Frontend**: Angular, React, Vue, Svelte, Next.js, Nuxt.js, etc.
+**Backend**: .NET Core, Node.js, Java Spring Boot, Python Django/FastAPI, Ruby on Rails, Go, etc.
+**Base de Datos**: SQL Server, PostgreSQL, MySQL, MongoDB, SQLite, etc.
+**Análisis Estático**: SonarCloud, SonarQube, CodeClimate, Codacy, ESLint + Prettier, etc.
+**Pruebas E2E**: Cypress, Playwright, Selenium, Puppeteer, etc.
+**CI/CD**: Azure DevOps Pipelines, GitHub Actions, GitLab CI, Jenkins, etc.
+
+### **Tareas a realizar:**
+1. Usar **aplicación con Front + Back + BD** (del TP06 o crear nueva, **NO la de la guía del TP04**).
 2. Implementar **herramientas de code coverage** y analizar la cobertura actual de tu código.
-3. Configurar **SonarCloud** para análisis estático y detectar **vulnerabilidades**, **bugs** y **code smells**.
-4. Desarrollar **pruebas de integración end-to-end** con **Cypress** que validen flujos completos.
+3. Configurar **análisis estático** (SonarCloud u otra herramienta) y detectar **vulnerabilidades**, **bugs** y **code smells**.
+4. Desarrollar **pruebas de integración end-to-end** que validen flujos completos.
 5. Integrar **todas las herramientas en CI/CD** con **quality gates** que bloqueen deploys defectuosos.
-6. Alcanzar **60% de code coverage mínimo** y **resolver issues críticos** de SonarCloud.
+6. Alcanzar **70% de code coverage mínimo** y **resolver issues críticos** del análisis estático.
 
 ---
 
@@ -1049,20 +1066,22 @@ Al finalizar este trabajo práctico, deberás ser capaz de:
 
 ## 📋 Tareas que debés cumplir
 
+**🔧 Nota sobre tecnologías**: Podés usar el stack tecnológico de tu preferencia. Los ejemplos mencionan herramientas específicas, pero podés usar alternativas equivalentes.
+
 ### 1. Code Coverage y métricas de calidad
-- Configurar **herramientas de coverage** para frontend y backend.
+- Configurar **herramientas de coverage** para frontend y backend (Jest, Karma, dotnet test, pytest, etc.).
 - Generar **reportes detallados** de cobertura de código.
 - Identificar **áreas críticas sin cobertura** y mejorarlas.
 - Integrar **reportes de coverage en CI/CD**.
 
-### 2. Análisis estático con SonarCloud
-- Crear y configurar **proyecto en SonarCloud**.
-- Integrar **SonarCloud en pipeline de Azure DevOps**.
+### 2. Análisis estático de código
+- Crear y configurar **proyecto de análisis estático** (SonarCloud, SonarQube, CodeClimate, etc.).
+- Integrar **análisis estático en pipeline** (Azure DevOps, GitHub Actions, etc.).
 - Analizar y **resolver issues críticos** detectados.
 - Configurar **quality gates** basados en métricas de calidad.
 
-### 3. Pruebas de integración con Cypress
-- Instalar y configurar **Cypress** en el proyecto.
+### 3. Pruebas de integración end-to-end
+- Instalar y configurar **herramienta de pruebas E2E** (Cypress, Playwright, Selenium, etc.).
 - Desarrollar **casos de prueba end-to-end** para flujos críticos.
 - Implementar **tests de integración frontend-backend**.
 - Automatizar **ejecución en pipeline**.
@@ -1131,15 +1150,18 @@ Al finalizar este trabajo práctico, deberás ser capaz de:
 
 ### Entregables
 
+**⚠️ Recordatorio**: NO usar la aplicación de la guía del TP04. Usar una aplicación diferente con el stack tecnológico de tu elección.
+
 1. **Repositorio actualizado** con:
-   - Configuración de herramientas de coverage
-   - Configuración de SonarCloud
-   - Pruebas de integración con Cypress
-   - Pipeline modificado con todas las integraciones
+   - Configuración de herramientas de coverage (para tu stack elegido)
+   - Configuración de análisis estático (SonarCloud o alternativa)
+   - Pruebas de integración E2E (Cypress, Playwright, o alternativa)
+   - Pipeline CI/CD modificado con todas las integraciones
 
 2. **Documento técnico** (formato PDF o Markdown) que incluya:
+   - **Justificación tecnológica**: Stack elegido y por qué
    - Análisis de cobertura inicial vs. final
-   - Capturas de pantalla de reportes de SonarCloud
+   - Capturas de pantalla de reportes de análisis estático
    - Descripción de los casos de prueba de integración implementados
    - Documentación de la configuración del pipeline
    - Reflexión personal sobre la importancia de estas herramientas en el desarrollo
